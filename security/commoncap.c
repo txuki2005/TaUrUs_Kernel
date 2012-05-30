@@ -986,3 +986,9 @@ int cap_file_mmap(struct file *file, unsigned long reqprot,
 	}
 	return ret;
 }
+
+int cap_mmap_file(struct file *file, unsigned long reqprot,
+		  unsigned long prot, unsigned long flags)
+{
+	return 0;
+}

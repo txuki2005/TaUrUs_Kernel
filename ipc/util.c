@@ -801,7 +801,7 @@ out_up:
 	return ERR_PTR(err);
 }
 
-#ifdef __ARCH_WANT_IPC_PARSE_VERSION
+#ifdef CONFIG_ARCH_WANT_IPC_PARSE_VERSION
 
 
 /**
@@ -823,7 +823,7 @@ int ipc_parse_version (int *cmd)
 	}
 }
 
-#endif /* __ARCH_WANT_IPC_PARSE_VERSION */
+#endif /* CONFIG_ARCH_WANT_IPC_PARSE_VERSION */
 
 #ifdef CONFIG_PROC_FS
 struct ipc_proc_iter {

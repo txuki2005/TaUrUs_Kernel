@@ -8,6 +8,7 @@
 
 #include <linux/mm.h>
 #include <linux/fs.h>
+#include <linux/rmap.h>
 
 #define ITSTRUCT   struct vm_area_struct
 #define ITRB       shared.linear.rb
@@ -59,3 +60,16 @@ void vma_interval_tree_add(struct vm_area_struct *vma,
 	rb_insert_augmented(&vma->shared.linear.rb, &mapping->i_mmap,
 			    &vma_interval_tree_augment_callbacks);
 }
+
+static inline unsigned long avc_start_pgoff(struct anon_vma_chain *avc)
+{
+	return vma_start_pgoff(avc->vma);
+}
+
+static inline unsigned long avc_last_pgoff(struct anon_vma_chain *avc)
+{
+	return vma_last_pgoff(avc->vma);
+}
+
+INTERVAL_TREE_DEFINE(struct anon_vma_chain, rb, unsigned long, rb_subtree_last,
+		     avc_start_pgoff, avc_last_pgoff,, anon_vma_interval_tree)

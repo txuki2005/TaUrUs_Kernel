@@ -16,7 +16,7 @@
 #include <linux/msg.h>
 #include <linux/ipc_namespace.h>
 #include <linux/utsname.h>
-#include <asm/uaccess.h>
+#include <linux/uaccess.h>
 
 #include "util.h"
 
@@ -35,7 +35,7 @@ struct ipc_namespace init_ipc_ns = {
 atomic_t nr_ipc_ns = ATOMIC_INIT(1);
 
 struct msg_msgseg {
-	struct msg_msgseg* next;
+	struct msg_msgseg *next;
 	/* the next part of the message follows immediately */
 };
 

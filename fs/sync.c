@@ -205,10 +205,12 @@ static int do_fsync(unsigned int fd, int datasync)
 	if (!fsync_enabled)
 		return 0;
 
-	file = fget(fd);
+	int fput_needed;
+	file = fget_light(fd, &fput_needed);
+
 	if (file) {
 		ret = vfs_fsync(file, datasync);
-		fput(file);
+		fput_light(file, fput_needed);
 	}
 	return ret;
 }

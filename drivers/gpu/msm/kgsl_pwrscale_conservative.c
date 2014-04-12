@@ -235,7 +235,7 @@ static ssize_t conservative_threshold_table_store(struct kgsl_device *device, st
 	return err;
 }
 
-PWRSCALE_POLICY_ATTR(threshold_table, 0644, conservative_threshold_table_show,
+PWRSCALE_POLICY_ATTR(threshold_table, 0664, conservative_threshold_table_show,
 		     conservative_threshold_table_store);
 
 static struct attribute *conservative_attrs[] = {

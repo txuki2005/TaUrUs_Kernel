@@ -884,6 +884,15 @@ lookup_pi_state(u32 uval, struct futex_hash_bucket *hb,
 			}
 
 			/*
+			 * Bail out if user space manipulated the
+			 * futex value. If pi state exists then the
+			 * owner TID must be the same as the user
+			 * space TID. [9/10]
+			 */
+			if (pid != task_pid_vnr(pi_state->owner))
+				return -EINVAL;
+
+			/*
 			 * Protect against a corrupted uval. If uval
 			 * is 0x80000000 then pid is 0 and the waiter
 			 * bit is set. So the deadlock check in the
@@ -893,6 +902,7 @@ lookup_pi_state(u32 uval, struct futex_hash_bucket *hb,
 			if (task && pi_state->owner == task)
 				return -EDEADLK;
 
+		out_state:
 			atomic_inc(&pi_state->refcount);
 			*ps = pi_state;
 			return 0;

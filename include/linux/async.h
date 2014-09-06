@@ -23,5 +23,6 @@ extern void async_synchronize_full(void);
 extern void async_synchronize_full_domain(struct list_head *list);
 extern void async_synchronize_cookie(async_cookie_t cookie);
 extern void async_synchronize_cookie_domain(async_cookie_t cookie,
-					    struct list_head *list);
-
+					    struct async_domain *domain);
+extern bool current_is_async(void);
+#endif

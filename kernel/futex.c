@@ -344,15 +344,8 @@ static void get_futex_key_refs(union futex_key *key)
 	case FUT_OFF_MMSHARED:
 		futex_get_mm(key); /* implies MB (B) */
 		break;
-
 	default:
-		/*
-		 * Private futexes do not hold reference on an inode or
-		 * mm, therefore the only purpose of calling get_futex_key_refs
-		 * is because we need the barrier for the lockless waiter check.
-		 */
 		smp_mb(); /* explicit MB (B) */
-
 	}
 }
 

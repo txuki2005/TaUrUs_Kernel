@@ -143,9 +143,8 @@
  *
  * Where (A) orders the waiters increment and the futex value read through
  * atomic operations (see hb_waiters_inc) and where (B) orders the write
- * to futex and the waiters read -- this is done by the barriers in
- * get_futex_key_refs(), through either ihold or atomic_inc, depending on the
- * futex type.
+ * to futex and the waiters read -- this is done by the barriers for both
+ * shared and private futexes in get_futex_key_refs().
  *
  * This yields the following case (where X:=waiters, Y:=futex):
  *
@@ -346,6 +345,11 @@ static void get_futex_key_refs(union futex_key *key)
 		futex_get_mm(key); /* implies MB (B) */
 		break;
 	default:
+		/*
+		 * Private futexes do not hold reference on an inode or
+		 * mm, therefore the only purpose of calling get_futex_key_refs
+		 * is because we need the barrier for the lockless waiter check.
+		 */
 		smp_mb(); /* explicit MB (B) */
 	}
 }

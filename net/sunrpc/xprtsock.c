@@ -1463,7 +1463,7 @@ static void xs_tcp_schedule_linger_timeout(struct rpc_xprt *xprt,
 		return;
 	set_bit(XPRT_CONNECTION_ABORT, &xprt->state);
 	transport = container_of(xprt, struct sock_xprt, xprt);
-	queue_delayed_work(rpciod_workqueue, &transport->connect_worker,
+	mod_delayed_work(rpciod_workqueue, &transport->connect_worker,
 			   timeout);
 }
 
@@ -2216,7 +2216,7 @@ static void xs_connect(struct rpc_task *task)
 		dprintk("RPC:       xs_connect delayed xprt %p for %lu "
 				"seconds\n",
 				xprt, xprt->reestablish_timeout / HZ);
-		queue_delayed_work(rpciod_workqueue,
+		mod_delayed_work(rpciod_workqueue,
 				   &transport->connect_worker,
 				   xprt->reestablish_timeout);
 		xprt->reestablish_timeout <<= 1;
@@ -2226,7 +2226,7 @@ static void xs_connect(struct rpc_task *task)
 			xprt->reestablish_timeout = XS_TCP_MAX_REEST_TO;
 	} else {
 		dprintk("RPC:       xs_connect scheduled xprt %p\n", xprt);
-		queue_delayed_work(rpciod_workqueue,
+		mod_delayed_work(rpciod_workqueue,
 				   &transport->connect_worker, 0);
 	}
 }

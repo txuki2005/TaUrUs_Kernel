@@ -330,7 +330,7 @@ static void devfreq_monitor(struct work_struct *work)
 
 	if (next_jiffies > 0 && next_jiffies < ULONG_MAX) {
 		polling = true;
-		queue_delayed_work(devfreq_wq, &devfreq_work, next_jiffies);
+		mod_delayed_work(devfreq_wq, &devfreq_work, next_jiffies);
 	} else {
 		polling = false;
 	}
@@ -413,7 +413,7 @@ struct devfreq *devfreq_add_device(struct device *dev,
 
 	if (devfreq_wq && devfreq->next_polling && !polling) {
 		polling = true;
-		queue_delayed_work(devfreq_wq, &devfreq_work,
+		mod_delayed_work(devfreq_wq, &devfreq_work,
 				   devfreq->next_polling);
 	}
 	mutex_unlock(&devfreq_list_lock);
@@ -504,7 +504,7 @@ static ssize_t store_polling_interval(struct device *dev,
 	mutex_lock(&devfreq_list_lock);
 	if (df->next_polling > 0 && !polling) {
 		polling = true;
-		queue_delayed_work(devfreq_wq, &devfreq_work,
+		mod_delayed_work(devfreq_wq, &devfreq_work,
 				   df->next_polling);
 	}
 	mutex_unlock(&devfreq_list_lock);
@@ -610,7 +610,7 @@ static int __init devfreq_start_polling(void)
 	    alloc_workqueue("devfreq_wq",
 			    WQ_HIGHPRI | WQ_UNBOUND | WQ_FREEZABLE |
 			    WQ_MEM_RECLAIM, 0);
-	INIT_DELAYED_WORK_DEFERRABLE(&devfreq_work, devfreq_monitor);
+	INIT_DEFERRABLE_WORK(&devfreq_work, devfreq_monitor);
 	mutex_unlock(&devfreq_list_lock);
 
 	devfreq_monitor(&devfreq_work.work);

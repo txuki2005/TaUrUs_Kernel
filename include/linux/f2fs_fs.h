@@ -86,6 +86,10 @@ struct f2fs_super_block {
 	__le32 extension_count;		/* # of extensions below */
 	__u8 extension_list[F2FS_MAX_EXTENSION][8];	/* extension array */
 	__le32 cp_payload;
+	__u8 version[VERSION_LEN];	/* the kernel version */
+	__u8 init_version[VERSION_LEN];	/* the initial kernel version */
+	__le32 feature;			/* defined features */
+	__u8 reserved[888];		/* valid reserved region */
 } __packed;
 
 /*

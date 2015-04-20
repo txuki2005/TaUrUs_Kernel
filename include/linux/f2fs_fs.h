@@ -50,6 +50,8 @@
 #define MAX_ACTIVE_NODE_LOGS	8
 #define MAX_ACTIVE_DATA_LOGS	8
 
+#define VERSION_LEN	256
+
 /*
  * For superblock
  */

@@ -182,7 +182,7 @@ int freeze_processes(void)
 		}
 		printk("done.");
  	}
-+done:
+done:
 	printk("\n");
 	BUG_ON(in_atomic());
 

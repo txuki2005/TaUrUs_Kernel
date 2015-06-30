@@ -104,8 +104,6 @@ struct t_data {
 	u16             tool_type;
 	u16             x_position;
 	u16             y_position;
-	u16		x_position_pre;
-	u16		y_position_pre;
 	u16             width_major;
 	u16             width_minor;
 	u16             width_orientation;

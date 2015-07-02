@@ -2222,7 +2222,7 @@ static int touch_probe(struct i2c_client *client,
 #ifdef CONFIG_DOUBLETAP_WAKE
 	mutex_init(&ts->dt_wake.lock);
 	dt2w_enabled = 0;
-	ts->dt_wake.pwr_disable = 0;
+	ts->dt_wake.pwr_disable = 1;
 	pending_status = 0;
 	ts->dt_wake.hits = 0;
 	ts->dt_wake.time = 0;

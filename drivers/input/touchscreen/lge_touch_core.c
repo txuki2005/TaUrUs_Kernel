@@ -761,13 +761,19 @@ static void dump_pointer_trace(void)
 
 #ifdef CONFIG_DOUBLETAP_WAKE
 
-/* Return zero for multi-touch double tap */
+/* Checks if there is a touch in the center of the screen */
 static inline int touch_within_limits(struct lge_touch_data *ts, int id)
 {
-	return (abs(ts->dt_wake.x_position[0] - 
-		    ts->dt_wake.x_position[1]) < DTW_TOUCH_AREA &&
-		abs(ts->dt_wake.y_position[0] -
-		    ts->dt_wake.y_position[1]) < DTW_TOUCH_AREA);
+	unsigned int dx, dy;
+
+	dx = ts->pdata->caps->lcd_x * DTW_TOUCH_AREA / 100;
+	dy = ts->pdata->caps->lcd_y * DTW_TOUCH_AREA / 100;
+
+	return (ts->ts_data.curr_data[id].x_position > ts->pdata->caps->lcd_x - dx &&
+		ts->ts_data.curr_data[id].x_position < ts->pdata->caps->lcd_x + dx &&
+		ts->ts_data.curr_data[id].y_position > ts->pdata->caps->lcd_y - dy &&
+		ts->ts_data.curr_data[id].y_position < ts->pdata->caps->lcd_y + dy);
+}
 
 static inline void touch_check_dt_wake(struct lge_touch_data *ts, int id)
 {
@@ -779,6 +785,12 @@ static inline void touch_check_dt_wake(struct lge_touch_data *ts, int id)
 			diff_time, ts->dt_wake.hits,
 			ts->ts_data.curr_data[id].x_position,
 			ts->ts_data.curr_data[id].y_position, id);
+
+	/* Out of boundary. Reset hits and return */
+	if (!touch_within_limits(ts, id)) {
+		TOUCH_DEBUG_MSG("Out of boundary\n");
+		goto reset;
+	}
 
 	/* Timeout. Reset hits and return */
 	if (ts->dt_wake.touch && diff_time > ts->dt_wake.max_interval) {
@@ -798,23 +810,12 @@ static inline void touch_check_dt_wake(struct lge_touch_data *ts, int id)
 	} else {
 		/* Touch released. Increase hits */
 		TOUCH_DEBUG_MSG("Touch released. Increase hits\n");
-		ts->dt_wake.x_position[ts->dt_wake.hits] = 
-			ts->ts_data.curr_data[id].x_position;
-		ts->dt_wake.y_position[ts->dt_wake.hits] = 
-			ts->ts_data.curr_data[id].y_position;
 		ts->dt_wake.hits++;
-
 		ts->ts_data.curr_data[id].state = 0;
 	}
 
 	if (ts->dt_wake.hits < 2)
 			return;
-
-	/* Multi-touch douple tap. Reset hits and return */
-	if (!touch_within_limits(ts, id)) {
-		TOUCH_DEBUG_MSG("Multi-touch double tap\n");
-		goto reset;
-	}
 
 	/* Double tap detected try to resume */
 	TOUCH_INFO_MSG("Double tap detected try to resume\n");
@@ -2228,7 +2229,7 @@ static int touch_probe(struct i2c_client *client,
 #ifdef CONFIG_DOUBLETAP_WAKE
 	mutex_init(&ts->dt_wake.lock);
 	dt2w_enabled = 0;
-	ts->dt_wake.pwr_disable = 1;
+	ts->dt_wake.pwr_disable = 0;
 	pending_status = 0;
 	ts->dt_wake.hits = 0;
 	ts->dt_wake.time = 0;

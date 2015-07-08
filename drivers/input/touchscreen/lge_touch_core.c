@@ -2211,7 +2211,6 @@ static void touch_power_on(struct lge_touch_data *ts)
 		ts->dt_wake.pending = 0;
 	}
 #endif
->>>>>>> f9b5666... input: lge_touch_core: Implement Double tap to wake functionality
 }
 
 static void touch_power_off(struct lge_touch_data *ts)

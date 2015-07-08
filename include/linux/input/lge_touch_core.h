@@ -33,7 +33,6 @@
 
 struct double_tap_wake {
 	unsigned int enabled;
-	unsigned int pwr_disable;
 	unsigned int pending_status;
 	unsigned int pending;
 	unsigned int max_interval;

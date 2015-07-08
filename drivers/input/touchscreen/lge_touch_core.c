@@ -35,8 +35,6 @@
 
 #include <linux/input/lge_touch_core.h>
 
-#define ANDROID_TOUCH_DECLARED
-
 struct touch_device_driver*     touch_device_func;
 struct workqueue_struct*        touch_wq;
 
@@ -50,12 +48,6 @@ struct lge_touch_attribute {
 static int is_pressure;
 static int is_width_major;
 static int is_width_minor;
-
-static int dt2w_enabled;
-static int curr_resume_state;
-
-static unsigned int pending;
-static unsigned int pending_status;
 
 #define LGE_TOUCH_ATTR(_name, _mode, _show, _store)               \
 	struct lge_touch_attribute lge_touch_attr_##_name =       \
@@ -1032,7 +1024,7 @@ static void touch_work_func(struct work_struct *work)
 	}
 
 #ifdef CONFIG_DOUBLETAP_WAKE
-	if ((!curr_resume_state) && dt2w_enabled)
+	if (ts->curr_resume_state == 0 && ts->dt_wake.enabled)
 		touch_input_dt_wake(ts);
 	else
 #endif
@@ -1128,7 +1120,7 @@ static void touch_fw_upgrade_func(struct work_struct *work_fw_upgrade)
 	if (touch_device_func->fw_upgrade(ts->client, ts->fw_upgrade.fw_path) < 0) {
 		TOUCH_ERR_MSG("Firmware upgrade was failed\n");
 
-		if (curr_resume_state)
+		if (ts->curr_resume_state)
 			if (ts->pdata->role->operation_mode == INTERRUPT_MODE)
 				enable_irq(ts->client->irq);
 
@@ -1139,7 +1131,7 @@ static void touch_fw_upgrade_func(struct work_struct *work_fw_upgrade)
 	do_gettimeofday(&t_debug[TIME_FW_UPGRADE_END]);
 #endif
 
-	if (!curr_resume_state) {
+	if (!ts->curr_resume_state) {
 		touch_power_cntl(ts, POWER_OFF);
 	}
 	else {
@@ -1803,12 +1795,11 @@ static ssize_t show_charger(struct lge_touch_data *ts, char *buf)
  *
  * Show if doubletap to wake functionality is enabled/disabled.
  */
-static ssize_t show_dt_wake_enabled(struct device *dev,
-		struct device_attribute *attr, char *buf)
+static ssize_t show_dt_wake_enabled(struct lge_touch_data *ts, char *buf)
 {
 	int ret = 0;
 
-	ret = sprintf(buf, "%u\n", dt2w_enabled);
+	ret = sprintf(buf, "%u\n", ts->dt_wake.enabled);
 
 	return ret;
 }
@@ -1817,8 +1808,8 @@ static ssize_t show_dt_wake_enabled(struct device *dev,
  *
  * Enabled/Disable doubletap to wake functionality.
  */
-static ssize_t store_dt_wake_enabled(struct device *dev,
-		struct device_attribute *attr, const char *buf, size_t count)
+static ssize_t store_dt_wake_enabled(struct lge_touch_data *ts, const char *buf,
+								size_t count)
 {
 	unsigned int value;
 	int ret;
@@ -1827,17 +1818,14 @@ static ssize_t store_dt_wake_enabled(struct device *dev,
 	if (value < 0 || value > 1)
 		return -EINVAL;
 
-	if (!curr_resume_state) {
-		pending_status = value;
-		pending = 1;
+	if (ts->curr_resume_state == 0) {
+		ts->dt_wake.pending_status = value;
+		ts->dt_wake.pending = 1;
 	} else
-		dt2w_enabled = value;
+		ts->dt_wake.enabled = value;
 
 	return count;
 }
-
-static DEVICE_ATTR(doubletap2wake, (S_IWUSR|S_IRUGO),
-	show_dt_wake_enabled, store_dt_wake_enabled);
 
 static ssize_t show_dt_wake_pwr_disable(struct lge_touch_data *ts, char *buf)
 {
@@ -1879,7 +1867,8 @@ static LGE_TOUCH_ATTR(pointer_location, S_IRUGO | S_IWUSR, show_pointer_location
 					store_pointer_location);
 static LGE_TOUCH_ATTR(charger, S_IRUGO | S_IWUSR, show_charger, NULL);
 #ifdef CONFIG_DOUBLETAP_WAKE
-
+static LGE_TOUCH_ATTR(dt_wake_enabled, S_IRUGO | S_IWUSR, show_dt_wake_enabled,
+					store_dt_wake_enabled);
 static LGE_TOUCH_ATTR(dt_wake_pwr_disable, S_IRUGO | S_IWUSR,
 			show_dt_wake_pwr_disable, store_dt_wake_pwr_disable);
 #endif
@@ -1896,6 +1885,7 @@ static struct attribute *lge_touch_attribute_list[] = {
 	&lge_touch_attr_pointer_location.attr,
 	&lge_touch_attr_charger.attr,
 #ifdef CONFIG_DOUBLETAP_WAKE
+	&lge_touch_attr_dt_wake_enabled.attr,
 	&lge_touch_attr_dt_wake_pwr_disable.attr,
 #endif
 	NULL,
@@ -2000,7 +1990,7 @@ static void touch_work_charger(struct work_struct *work)
 
 	TOUCH_INFO_MSG("CHARGER = %d\n", ts->charger_type);
 
-	if (curr_resume_state)
+	if (ts->curr_resume_state)
 		touch_device_func->ic_ctrl(ts->client,
 					IC_CTRL_CHARGER, ts->charger_type);
 }
@@ -2097,7 +2087,7 @@ static int touch_probe(struct i2c_client *client,
 	}
 
 	atomic_set(&ts->device_init, 0);
-	curr_resume_state = 1;
+	ts->curr_resume_state = 1;
 
 	/* Power on */
 	if (touch_power_cntl(ts, POWER_ON) < 0)
@@ -2228,9 +2218,9 @@ static int touch_probe(struct i2c_client *client,
 
 #ifdef CONFIG_DOUBLETAP_WAKE
 	mutex_init(&ts->dt_wake.lock);
-	dt2w_enabled = 0;
-	ts->dt_wake.pwr_disable = 0;
-	pending_status = 0;
+	ts->dt_wake.enabled = 0;
+	ts->dt_wake.pwr_disable = 1;
+	ts->dt_wake.pending_status = 0;
 	ts->dt_wake.hits = 0;
 	ts->dt_wake.time = 0;
 	ts->dt_wake.touch = 0;
@@ -2350,15 +2340,15 @@ static void touch_power_on(struct lge_touch_data *ts)
 	if (unlikely(touch_debug_mask & DEBUG_TRACE))
 		TOUCH_DEBUG_MSG("\n");
 
-	curr_resume_state = 1;
-	TOUCH_DEBUG_MSG("Power on. Resume state %u\n", curr_resume_state);
+	ts->curr_resume_state = 1;
+	TOUCH_DEBUG_MSG("Power on. Resume state %u\n", ts->curr_resume_state);
 	if (ts->fw_upgrade.is_downloading == UNDER_DOWNLOADING) {
 		TOUCH_INFO_MSG("late_resume is not executed\n");
 		return;
 	}
 
 #ifdef CONFIG_DOUBLETAP_WAKE
-	if (dt2w_enabled && (!ts->dt_wake.pwr_disable || !pwr_pressed)) {
+	if (ts->dt_wake.enabled && (!ts->dt_wake.pwr_disable || !pwr_pressed)) {
 		wake_unlock(&ts->dt_wake.wlock);
 		disable_irq_wake(ts->client->irq);
 
@@ -2389,9 +2379,9 @@ static void touch_power_on(struct lge_touch_data *ts)
 
 
 #ifdef CONFIG_DOUBLETAP_WAKE
-	if (pending) {
-		dt2w_enabled = pending_status;
-		pending = 0;
+	if (ts->dt_wake.pending) {
+		ts->dt_wake.enabled = ts->dt_wake.pending_status;
+		ts->dt_wake.pending = 0;
 	}
 	pwr_pressed = 0;
 #endif
@@ -2402,14 +2392,14 @@ static void touch_power_off(struct lge_touch_data *ts)
 	if (unlikely(touch_debug_mask & DEBUG_TRACE))
 		TOUCH_DEBUG_MSG("\n");
 
-	curr_resume_state = 0;
-	TOUCH_DEBUG_MSG("Power off. Resume state %u\n", curr_resume_state);
+	ts->curr_resume_state = 0;
+	TOUCH_DEBUG_MSG("Power off. Resume state %u\n", ts->curr_resume_state);
 	if (ts->fw_upgrade.is_downloading == UNDER_DOWNLOADING) {
 		TOUCH_INFO_MSG("early_suspend is not executed\n");
 		return;
 	}
 #ifdef CONFIG_DOUBLETAP_WAKE
-	if (dt2w_enabled && (!ts->dt_wake.pwr_disable || !pwr_pressed)) {
+	if (ts->dt_wake.enabled && (!ts->dt_wake.pwr_disable || !pwr_pressed)) {
 		cancel_work_sync(&ts->work);
 		cancel_delayed_work_sync(&ts->work_init);
 		release_all_ts_event(ts);
@@ -2490,17 +2480,9 @@ static struct i2c_driver lge_touch_driver = {
 	},
 };
 
-#ifdef ANDROID_TOUCH_DECLARED
-extern struct kobject *android_touch_kobj;
-#else
-struct kobject *android_touch_kobj;
-EXPORT_SYMBOL_GPL(android_touch_kobj);
-#endif
-
 int touch_driver_register(struct touch_device_driver* driver)
 {
 	int ret = 0;
-	int rc = 0;
 
 	if (unlikely(touch_debug_mask & DEBUG_TRACE))
 		TOUCH_DEBUG_MSG("\n");
@@ -2524,17 +2506,6 @@ int touch_driver_register(struct touch_device_driver* driver)
 	if (ret < 0) {
 		TOUCH_ERR_MSG("FAIL: i2c_add_driver\n");
 		goto err_i2c_add_driver;
-	}
-
-#ifndef ANDROID_TOUCH_DECLARED
-	android_touch_kobj = kobject_create_and_add("android_touch", NULL) ;
-	if (android_touch_kobj == NULL) {
-		pr_warn("%s: android_touch_kobj create_and_add failed\n", __func__);
-	}
-#endif
-	rc = sysfs_create_file(android_touch_kobj, &dev_attr_doubletap2wake.attr);
-	if (rc) {
-		pr_warn("%s: sysfs_create_file failed for doubletap2wake\n", __func__);
 	}
 
 	return 0;

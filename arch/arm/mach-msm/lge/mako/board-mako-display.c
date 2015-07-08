@@ -29,7 +29,6 @@
 #include <mach/ion.h>
 #include <mach/msm_bus_board.h>
 #include <mach/socinfo.h>
-#include <linux/input/sweep2wake.h>
 
 #include <msm/msm_fb.h>
 #include <msm/msm_fb_def.h>
@@ -107,9 +106,6 @@ static int msm_fb_detect_panel(const char *name)
 struct kcal_data kcal_value;
 
 extern int g_kcal_min;
-extern int down_kcal, up_kcal;
-
-extern void sweep2wake_pwrtrigger(void);
 #endif
 
 #ifdef CONFIG_UPDATE_LCDC_LUT
@@ -343,38 +339,6 @@ static int kcal_get_min(int *kcal_min)
 int kcal_refresh_values()
 {
 	return update_preset_lcdc_lut();
-}
-
-void kcal_send_s2d(int set)
-{
-	int r, g, b;
-
-	r = kcal_value.red;
-	g = kcal_value.green;
-	b = kcal_value.blue;
-
-	if (set == 1) {
-		r = r - down_kcal;
-		g = g - down_kcal;
-		b = b - down_kcal;
-	}
-
-	if (set == 2) {
-		if ((r == 255) && (g == 255) && (b == 255))
-			return;
-
-		r = r + up_kcal;
-		g = g + up_kcal;
-		b = b + up_kcal;
-	}
-
-	if ((r < g_kcal_min) && (g < g_kcal_min) && (b < g_kcal_min))
-		sweep2wake_pwrtrigger();
-
-	kcal_set_values(r, g, b);
-	update_preset_lcdc_lut();
-
-	return;
 }
 
 static struct kcal_platform_data kcal_pdata = {

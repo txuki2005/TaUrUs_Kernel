@@ -32,6 +32,9 @@
 #define DTW_LOCK_TIMEOUT	(700)
 
 struct double_tap_wake {
+	unsigned int enabled;
+	unsigned int pending_status;
+	unsigned int pending;
 	unsigned int max_interval;
 	unsigned int lock_timeout;
 	unsigned int hits;
@@ -217,6 +220,7 @@ struct lge_touch_data {
 	u8                              ic_init_err_cnt;
 	u8                              charger_type;
 	volatile int                    curr_pwr_state;
+	int                             curr_resume_state;
 	struct i2c_client               *client;
 	struct input_dev                *input_dev;
 	struct hrtimer                  timer;

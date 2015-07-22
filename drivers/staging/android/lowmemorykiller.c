@@ -438,9 +438,17 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		task_unlock(p);
 		if (tasksize <= 0)
 			continue;
-		if (selected && oom_score_adj == selected_oom_score_adj &&
-			tasksize <= selected_tasksize)
-			continue;
+	if (selected) {
+			if (oom_score_adj < selected_oom_score_adj)
+#ifdef CONFIG_ANDROID_LMK_ADJ_RBTREE
+				break;
+#else
+				continue;
+#endif
+			if (oom_score_adj == selected_oom_score_adj &&
+			    tasksize <= selected_tasksize)
+				continue;
+		}
 		pcred = __task_cred(p);
 		uid = pcred->uid;
 		if (avoid_to_kill(uid) || protected_apps(p->comm)){
@@ -459,16 +467,6 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 			selected_oom_score_adj = oom_score_adj;
 			lowmem_print(3, "select %d (%s), adj %d, size %d, to kill\n",
 			     	p->pid, p->comm, oom_score_adj, tasksize);
-		if (selected) {
-			if (oom_score_adj < selected_oom_score_adj)
-#ifdef CONFIG_ANDROID_LMK_ADJ_RBTREE
-				break;
-#else
-				continue;
-#endif
-			if (oom_score_adj == selected_oom_score_adj &&
-			    tasksize <= selected_tasksize)
-				continue;
 		}
 	}
 	if (selected) {

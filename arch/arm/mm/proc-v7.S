@@ -84,10 +84,8 @@ ENTRY(cpu_v7_dcache_clean_area)
 	add	r0, r0, r2
 	subs	r1, r1, r2
 	bhi	1b
-	dsb	ishst
+	dsb
 #endif
-	bhi	1b
-	dsb	ishst
 	mov	pc, lr
 ENDPROC(cpu_v7_dcache_clean_area)
 

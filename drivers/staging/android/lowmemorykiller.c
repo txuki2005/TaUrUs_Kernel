@@ -279,7 +279,6 @@ void tune_lmk_zone_param(struct zonelist *zonelist, int classzone_idx,
 					  zone_page_state(zone, NR_FREE_PAGES);
 			}
 		}
-	}
 }
 
 #ifdef CONFIG_HIGHMEM

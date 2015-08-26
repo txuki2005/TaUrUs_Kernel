@@ -86,8 +86,6 @@ ENTRY(cpu_v7_dcache_clean_area)
 	bhi	1b
 	dsb	ishst
 #endif
-	bhi	1b
-	dsb	ishst
 	mov	pc, lr
 ENDPROC(cpu_v7_dcache_clean_area)
 

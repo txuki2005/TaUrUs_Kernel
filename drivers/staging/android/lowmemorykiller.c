@@ -244,7 +244,7 @@ void tune_lmk_zone_param(struct zonelist *zonelist, int classzone_idx,
 	int zone_idx;
 
 	for_each_zone_zonelist(zone, zoneref, zonelist, MAX_NR_ZONES) {
-		if ((zone_idx = zonelist_zone_idx(zoneref)) == ZONE_MOVABLE)
+		if ((zone_idx = zonelist_zone_idx(zoneref)) == ZONE_MOVABLE) {
 			if (!use_cma_pages && other_free)
 				*other_free -=
 				    zone_page_state(zone, NR_FREE_CMA_PAGES);
@@ -279,6 +279,7 @@ void tune_lmk_zone_param(struct zonelist *zonelist, int classzone_idx,
 					  zone_page_state(zone, NR_FREE_PAGES);
 			}
 		}
+	}
 }
 
 #ifdef CONFIG_HIGHMEM

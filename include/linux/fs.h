@@ -1033,11 +1033,7 @@ struct file_handle {
 	unsigned char f_handle[0];
 };
 
-static inline struct file *get_file(struct file *f)
-{
-	atomic_long_inc(&f->f_count);
-	return f;
-}
+#define get_file(x)	atomic_long_inc(&(x)->f_count)
 #define fput_atomic(x)	atomic_long_add_unless(&(x)->f_count, -1, 1)
 #define file_count(x)	atomic_long_read(&(x)->f_count)
 

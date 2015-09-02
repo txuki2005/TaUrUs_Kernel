@@ -1122,11 +1122,7 @@ unsigned long do_mmap_pgoff(struct file *file, unsigned long addr,
 		}
 	}
 
-	error = security_mmap_addr(addr);
-	if (error)
-		return error;
-
-	error = security_mmap_file(file, reqprot, prot, flags);
+	error = security_file_mmap(file, reqprot, prot, flags, addr, 0);
 	if (error)
 		return error;
 
@@ -1858,7 +1854,7 @@ int expand_downwards(struct vm_area_struct *vma,
 		return -ENOMEM;
 
 	address &= PAGE_MASK;
-	error = security_mmap_addr(address);
+	error = security_file_mmap(NULL, 0, 0, 0, address, 1);
 	if (error)
 		return error;
 
@@ -2270,7 +2266,7 @@ static unsigned long do_brk(unsigned long addr, unsigned long len)
 	if (!len)
 		return addr;
 
-	error = security_mmap_addr(addr);
+	error = security_file_mmap(NULL, 0, 0, 0, addr, 1);
 	if (error)
 		return error;
 
@@ -2616,7 +2612,7 @@ int install_special_mapping(struct mm_struct *mm,
 	vma->vm_ops = &special_mapping_vmops;
 	vma->vm_private_data = pages;
 
-	ret = security_mmap_addr(vma->vm_start);
+	ret = security_file_mmap(NULL, 0, 0, 0, vma->vm_start, 1);
 	if (ret)
 		goto out;
 

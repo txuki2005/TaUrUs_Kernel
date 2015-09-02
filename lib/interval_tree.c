@@ -1,10 +1,13 @@
 #include <linux/init.h>
 #include <linux/interval_tree.h>
-#include <linux/interval_tree_generic.h>
 
-#define START(node) ((node)->start)
-#define LAST(node)  ((node)->last)
+#define ITSTRUCT   struct interval_tree_node
+#define ITRB       rb
+#define ITTYPE     unsigned long
+#define ITSUBTREE  __subtree_last
+#define ITSTART(n) ((n)->start)
+#define ITLAST(n)  ((n)->last)
+#define ITSTATIC
+#define ITPREFIX   interval_tree
 
-INTERVAL_TREE_DEFINE(struct interval_tree_node, rb,
-		     unsigned long, __subtree_last,
-		     START, LAST,, interval_tree)
+#include <linux/interval_tree_tmpl.h>

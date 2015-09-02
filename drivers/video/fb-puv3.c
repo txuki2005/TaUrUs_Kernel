@@ -653,8 +653,9 @@ int unifb_mmap(struct fb_info *info,
 				vma->vm_page_prot))
 		return -EAGAIN;
 
-	/* VM_IO | VM_DONTEXPAND | VM_DONTDUMP are set by remap_pfn_range() */
+	vma->vm_flags |= VM_RESERVED;	/* avoid to swap out this VMA */
 	return 0;
+
 }
 
 static struct fb_ops unifb_ops = {

@@ -271,7 +271,7 @@ static int udl_fb_mmap(struct fb_info *info, struct vm_area_struct *vma)
 			size = 0;
 	}
 
-	/* VM_IO | VM_DONTEXPAND | VM_DONTDUMP are set by remap_pfn_range() */
+	vma->vm_flags |= VM_RESERVED;	/* avoid to swap out this VMA */
 	return 0;
 }
 

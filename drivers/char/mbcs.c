@@ -507,7 +507,7 @@ static int mbcs_gscr_mmap(struct file *fp, struct vm_area_struct *vma)
 
 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 
-	/* Remap-pfn-range will mark the range VM_IO */
+	/* Remap-pfn-range will mark the range VM_IO and VM_RESERVED */
 	if (remap_pfn_range(vma,
 			    vma->vm_start,
 			    __pa(soft->gscr_addr) >> PAGE_SHIFT,

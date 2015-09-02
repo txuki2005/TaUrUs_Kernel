@@ -1149,7 +1149,7 @@ static unsigned long vma_dump_size(struct vm_area_struct *vma,
 	}
 
 	/* Do not dump I/O mapped devices or special mappings */
-	if (vma->vm_flags & VM_IO)
+	if (vma->vm_flags & (VM_IO | VM_RESERVED))
 		return 0;
 
 	/* By default, dump shared memory if mapped from an anonymous file. */

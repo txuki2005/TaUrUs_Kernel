@@ -1024,7 +1024,7 @@ static int gbefb_mmap(struct fb_info *info,
 	pgprot_val(vma->vm_page_prot) =
 		pgprot_fb(pgprot_val(vma->vm_page_prot));
 
-	/* VM_IO | VM_DONTEXPAND | VM_DONTDUMP are set by remap_pfn_range() */
+	vma->vm_flags |= VM_IO | VM_RESERVED;
 
 	/* look for the starting tile */
 	tile = &gbe_tiles.cpu[offset >> TILE_SHIFT];

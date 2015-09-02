@@ -2157,7 +2157,8 @@ int remap_vmalloc_range(struct vm_area_struct *vma, void *addr,
 		usize -= PAGE_SIZE;
 	} while (usize > 0);
 
-	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+	/* Prevent "things" like memory migration? VM_flags need a cleanup... */
+	vma->vm_flags |= VM_RESERVED;
 
 	return 0;
 }

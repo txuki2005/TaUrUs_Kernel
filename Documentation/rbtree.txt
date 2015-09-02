@@ -205,24 +205,12 @@ place. This will cause the augmentation function callback to be called for
 each node between the new node and the root which has been affected by the
 insertion.
 
-C files implementing augmented rbtree manipulation must include
-<linux/rbtree_augmented.h> instead of <linus/rbtree.h>. Note that
-linux/rbtree_augmented.h exposes some rbtree implementations details
-you are not expected to rely on; please stick to the documented APIs
-there and do not include <linux/rbtree_augmented.h> from header files
-either so as to minimize chances of your users accidentally relying on
-such implementation details.
-
 When erasing a node, the user must call rb_augment_erase_begin() first to
 retrieve the deepest node on the rebalance path. Then, after erasing the
 original node, the user must call rb_augment_erase_end() with the deepest
 node found earlier. This will cause the augmentation function to be called
 for each affected node between the deepest node and the root.
 
-The compiled code for rb_erase_augmented() may inline the propagation and
-copy callbacks, which results in a large function, so each augmented rbtree
-user should have a single rb_erase_augmented() call site in order to limit
-compiled code size.
 
 Interval tree is an example of augmented rb tree. Reference -
 "Introduction to Algorithms" by Cormen, Leiserson, Rivest and Stein.

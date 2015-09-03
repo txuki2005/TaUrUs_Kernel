@@ -577,9 +577,9 @@ rexmit_timer(ulong vp)
 
 	spin_unlock_irqrestore(&d->lock, flags);
 
-
+<<<<<<< HEAD
 	aoenet_xmit(&queue);
-
+=======
 static unsigned long
 rqbiocnt(struct request *r)
 {
@@ -682,6 +682,7 @@ nextbuf(struct aoedev *d)
 	if (bio == NULL)
 		d->ip.rq = NULL;
 	return d->ip.buf = buf;
+>>>>>>> def52ac... mm: close PageTail race
 }
 
 /* enters with d->lock held */

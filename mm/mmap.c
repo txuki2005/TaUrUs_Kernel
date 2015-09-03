@@ -674,8 +674,8 @@ again:			remove_next = 1 + (end > next->vm_end);
 		 * up the code too much to do both in one go.
 		 */
 		if (remove_next == 2) {
+			uksm_remove_vma(next);
 			next = vma->vm_next;
-			uksm_remove_vma(next);	
 			goto again;
 		}
 	}

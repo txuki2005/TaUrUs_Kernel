@@ -1300,7 +1300,6 @@ static int check_unsafe_exec(struct linux_binprm *bprm)
 	return res;
 }
 
-<<<<<<< HEAD
 static void bprm_fill_uid(struct linux_binprm *bprm)
 {
 	struct inode *inode;

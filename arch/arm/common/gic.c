@@ -268,7 +268,6 @@ static void gic_show_resume_irq(struct gic_chip_data *gic)
 	for (i = find_first_bit(pending, gic->gic_irqs);
 		i < gic->gic_irqs;
 		i = find_next_bit(pending, gic->gic_irqs, i+1)) {
-		log_base_wakeup_reason(i + gic->irq_offset);
 		struct irq_desc *desc = irq_to_desc(i + gic->irq_offset);
 		const char *name = "null";
 
@@ -279,6 +278,8 @@ static void gic_show_resume_irq(struct gic_chip_data *gic)
 
 		pr_warning("%s: %d triggered %s\n", __func__,
 					i + gic->irq_offset, name);
+
+		log_base_wakeup_reason(i + gic->irq_offset);
 	}
 }
 

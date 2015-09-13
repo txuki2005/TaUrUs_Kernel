@@ -1635,7 +1635,7 @@ retry_private:
 			 * lookup_pi_state.
 			 */
 
-			ret = lookup_pi_state(ret, hb2, &key2, &pi_state, NULL);
+			ret = lookup_pi_state(ret, hb2, &key2, &pi_state);
 		}
 
 		switch (ret) {

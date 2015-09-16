@@ -2,6 +2,10 @@
 # Timer subsystem related configuration options
 #
 
+# Architecture can handle broadcast in a driver-agnostic way
+config ARCH_HAS_TICK_BROADCAST
+	bool
+
 # Core internal switch. Selected by NO_HZ / HIGH_RES_TIMERS. This is
 # only related to the tick functionality. Oneshot clockevent devices
 # are supported independ of this.

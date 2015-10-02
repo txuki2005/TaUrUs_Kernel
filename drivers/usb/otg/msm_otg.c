@@ -586,7 +586,7 @@ static enum hrtimer_restart msm_otg_timer_func(struct hrtimer *hrtimer)
 	}
 
 	pr_debug("expired %s timer\n", timer_string(motg->active_tmout));
-	queue_work(system_nrt_wq, &motg->sm_work);
+	schedule_work(&motg->sm_work);
 	return HRTIMER_NORESTART;
 }
 
@@ -629,7 +629,7 @@ static int msm_otg_start_hnp(struct usb_otg *otg)
 
 	pr_debug("A-Host: HNP initiated\n");
 	clear_bit(A_BUS_REQ, &motg->inputs);
-	queue_work(system_nrt_wq, &motg->sm_work);
+	schedule_work(&motg->sm_work);
 	return 0;
 }
 
@@ -715,7 +715,7 @@ static int msm_otg_set_suspend(struct usb_phy *phy, int suspend)
 			pr_debug("host bus suspend\n");
 			clear_bit(A_BUS_REQ, &motg->inputs);
 			if (!atomic_read(&motg->in_lpm))
-				queue_work(system_nrt_wq, &motg->sm_work);
+				schedule_work(&motg->sm_work);
 			break;
 		case OTG_STATE_B_PERIPHERAL:
 			pr_debug("peripheral bus suspend\n");
@@ -723,7 +723,7 @@ static int msm_otg_set_suspend(struct usb_phy *phy, int suspend)
 				break;
 			set_bit(A_BUS_SUSPEND, &motg->inputs);
 			if (!atomic_read(&motg->in_lpm))
-				queue_work(system_nrt_wq, &motg->sm_work);
+				schedule_work(&motg->sm_work);
 			break;
 
 		default:
@@ -753,7 +753,7 @@ static int msm_otg_set_suspend(struct usb_phy *phy, int suspend)
 				break;
 			clear_bit(A_BUS_SUSPEND, &motg->inputs);
 			if (atomic_read(&motg->in_lpm))
-				queue_work(system_nrt_wq, &motg->sm_work);
+				schedule_work(&motg->sm_work);
 			break;
 		default:
 			break;
@@ -1298,7 +1298,7 @@ static int msm_otg_usbdev_notify(struct notifier_block *self,
 				udev->bus->otg_vbus_off = 0;
 				set_bit(A_BUS_DROP, &motg->inputs);
 			}
-			queue_work(system_nrt_wq, &motg->sm_work);
+			schedule_work(&motg->sm_work);
 		}
 	default:
 		break;
@@ -1387,7 +1387,7 @@ static int msm_otg_set_host(struct usb_otg *otg, struct usb_bus *host)
 			msm_hsusb_vbus_power(motg, 0);
 			otg->host = NULL;
 			otg->phy->state = OTG_STATE_UNDEFINED;
-			queue_work(system_nrt_wq, &motg->sm_work);
+			schedule_work(&motg->sm_work);
 		} else {
 			otg->host = NULL;
 		}
@@ -1412,7 +1412,7 @@ static int msm_otg_set_host(struct usb_otg *otg, struct usb_bus *host)
 	 */
 	if (motg->pdata->mode == USB_HOST || otg->gadget) {
 		pm_runtime_get_sync(otg->phy->dev);
-		queue_work(system_nrt_wq, &motg->sm_work);
+		schedule_work(&motg->sm_work);
 	}
 
 	return 0;
@@ -1483,7 +1483,7 @@ static int msm_otg_set_peripheral(struct usb_otg *otg,
 			msm_otg_start_peripheral(otg, 0);
 			otg->gadget = NULL;
 			otg->phy->state = OTG_STATE_UNDEFINED;
-			queue_work(system_nrt_wq, &motg->sm_work);
+			schedule_work(&motg->sm_work);
 		} else {
 			otg->gadget = NULL;
 		}
@@ -1499,7 +1499,7 @@ static int msm_otg_set_peripheral(struct usb_otg *otg,
 	 */
 	if (motg->pdata->mode == USB_PERIPHERAL || otg->host) {
 		pm_runtime_get_sync(otg->phy->dev);
-		queue_work(system_nrt_wq, &motg->sm_work);
+		schedule_work(&motg->sm_work);
 	}
 
 	return 0;
@@ -1788,7 +1788,7 @@ static void msm_otg_id_timer_func(unsigned long data)
 
 	if (msm_chg_check_aca_intr(motg)) {
 		dev_dbg(motg->phy.dev, "timer: aca work\n");
-		queue_work(system_nrt_wq, &motg->sm_work);
+		schedule_work(&motg->sm_work);
 	}
 
 out:
@@ -2114,14 +2114,14 @@ static void msm_chg_detect_work(struct work_struct *w)
 			msm_chg_block_off(motg);
 			motg->chg_state = USB_CHG_STATE_DETECTED;
 			motg->chg_type = USB_SDP_CHARGER;
-			queue_work(system_nrt_wq, &motg->sm_work);
+			schedule_work(&motg->sm_work);
 			return;
 		}
 		if (msm_chg_mhl_detect(motg)) {
 			msm_chg_block_off(motg);
 			motg->chg_state = USB_CHG_STATE_DETECTED;
 			motg->chg_type = USB_INVALID_CHARGER;
-			queue_work(system_nrt_wq, &motg->sm_work);
+			schedule_work(&motg->sm_work);
 			return;
 		}
 		is_aca = msm_chg_aca_detect(motg);
@@ -2217,7 +2217,7 @@ static void msm_chg_detect_work(struct work_struct *w)
 		msm_chg_enable_aca_intr(motg);
 		dev_dbg(phy->dev, "chg_type = %s\n",
 			chg_to_string(motg->chg_type));
-		queue_work(system_nrt_wq, &motg->sm_work);
+		schedule_work(&motg->sm_work);
 		return;
 	default:
 		return;
@@ -2885,7 +2885,7 @@ static void msm_otg_sm_work(struct work_struct *w)
 		break;
 	}
 	if (work)
-		queue_work(system_nrt_wq, &motg->sm_work);
+		schedule_work(&motg->sm_work);
 }
 
 static irqreturn_t msm_otg_irq(int irq, void *data)
@@ -3043,7 +3043,7 @@ static irqreturn_t msm_otg_irq(int irq, void *data)
 		ret = IRQ_HANDLED;
 	}
 	if (work)
-		queue_work(system_nrt_wq, &motg->sm_work);
+		schedule_work(&motg->sm_work);
 
 	return ret;
 }
@@ -3093,7 +3093,7 @@ static void msm_otg_set_vbus_state(int online)
 	if (atomic_read(&motg->pm_suspended))
 		motg->sm_work_pending = true;
 	else
-		queue_work(system_nrt_wq, &motg->sm_work);
+		schedule_work(&motg->sm_work);
 }
 
 static void msm_pmic_id_status_w(struct work_struct *w)
@@ -3119,7 +3119,7 @@ static void msm_pmic_id_status_w(struct work_struct *w)
 		if (atomic_read(&motg->pm_suspended))
 			motg->sm_work_pending = true;
 		else
-			queue_work(system_nrt_wq, &motg->sm_work);
+			schedule_work(&motg->sm_work);
 	}
 
 }
@@ -3234,7 +3234,7 @@ static ssize_t msm_otg_mode_write(struct file *file, const char __user *ubuf,
 	}
 
 	pm_runtime_resume(phy->dev);
-	queue_work(system_nrt_wq, &motg->sm_work);
+	schedule_work(&motg->sm_work);
 out:
 	return status;
 }
@@ -4061,7 +4061,7 @@ static int msm_otg_pm_resume(struct device *dev)
 
 		if (motg->sm_work_pending) {
 			motg->sm_work_pending = false;
-			queue_work(system_nrt_wq, &motg->sm_work);
+			schedule_work(&motg->sm_work);
 		}
 	}
 

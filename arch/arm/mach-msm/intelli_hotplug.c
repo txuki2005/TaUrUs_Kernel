@@ -37,7 +37,7 @@
 #define MIN_INPUT_INTERVAL		150 * 1000L
 #define BOOST_LOCK_DUR			500 * 1000L
 #define DEFAULT_NR_CPUS_BOOSTED		2
-#define DEFAULT_MIN_CPUS_ONLINE		1
+#define DEFAULT_MIN_CPUS_ONLINE		2
 #define DEFAULT_MAX_CPUS_ONLINE		NR_CPUS
 #define DEFAULT_NR_FSHIFT		DEFAULT_MAX_CPUS_ONLINE - 1
 #define DEFAULT_DOWN_LOCK_DUR		1000
@@ -355,7 +355,7 @@ static void __ref intelli_plug_resume(struct work_struct *work)
 		required_wakeup = 1;
 		/* Initiate hotplug work if it was cancelled */
 		required_reschedule = 1;
-		INIT_DELAYED_WORK(&intelli_plug_work,
+		INIT_DELAYED_WORK_DEFERRABLE(&intelli_plug_work,
 				intelli_plug_work_fn);
 		dprintk("%s: resumed.\n", INTELLI_PLUG);
 	}
@@ -391,7 +391,7 @@ static void __intelli_plug_suspend(struct early_suspend *handler)
 	if (!hotplug_suspend)
 		return;
 
-	INIT_DELAYED_WORK(&suspend_work, intelli_plug_suspend);
+	INIT_DELAYED_WORK_DEFERRABLE(&suspend_work, intelli_plug_suspend);
 	queue_delayed_work_on(0, susp_wq, &suspend_work,
 				 msecs_to_jiffies(suspend_defer_time * 1000));
 }
@@ -608,15 +608,15 @@ static int __ref intelli_plug_start(void)
 #endif
 
 	INIT_WORK(&up_down_work, cpu_up_down_work);
-	INIT_DELAYED_WORK(&intelli_plug_work, intelli_plug_work_fn);
+	INIT_DELAYED_WORK_DEFERRABLE(&intelli_plug_work, intelli_plug_work_fn);
 	for_each_possible_cpu(cpu) {
 		dl = &per_cpu(lock_info, cpu);
-		INIT_DELAYED_WORK(&dl->lock_rem, remove_down_lock);
+		INIT_DELAYED_WORK_DEFERRABLE(&dl->lock_rem, remove_down_lock);
 	}
 #if defined(CONFIG_LCD_NOTIFY) || \
 	defined(CONFIG_POWERSUSPEND) || \
 	defined(CONFIG_HAS_EARLYSUSPEND)
-	INIT_DELAYED_WORK(&suspend_work, intelli_plug_suspend);
+	INIT_DELAYED_WORK_DEFERRABLE(&suspend_work, intelli_plug_suspend);
 	INIT_WORK(&resume_work, intelli_plug_resume);
 #endif
 

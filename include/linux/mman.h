@@ -20,15 +20,9 @@ extern int sysctl_overcommit_memory;
 extern int sysctl_overcommit_ratio;
 extern struct percpu_counter vm_committed_as;
 
-#ifdef CONFIG_SMP
-extern s32 vm_committed_as_batch;
-#else
-#define vm_committed_as_batch 0
-#endif
-
 static inline void vm_acct_memory(long pages)
 {
-	__percpu_counter_add(&vm_committed_as, pages, vm_committed_as_batch);
+	percpu_counter_add(&vm_committed_as, pages);
 }
 
 static inline void vm_unacct_memory(long pages)

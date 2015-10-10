@@ -1032,6 +1032,7 @@ static ssize_t gfs2_direct_IO(int rw, struct kiocb *iocb,
 	if (rv != 1)
 		goto out; /* dio not valid, fall back to buffered i/o */
 
+<<<<<<< HEAD
 	/*
 	 * Now since we are holding a deferred (CW) lock at this point, you
 	 * might be wondering why this is ever needed. There is a case however

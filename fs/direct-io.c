@@ -1201,6 +1201,7 @@ do_blockdev_direct_IO(int rw, struct kiocb *iocb, struct inode *inode,
 	struct dio *dio;
 	struct dio_submit sdio = { 0, };
 	struct buffer_head map_bh = { 0, };
+	const struct iovec *iov = iov_iter_iovec(iter);
 	unsigned long nr_segs = iter->nr_segs;
 
 	if (rw & WRITE)

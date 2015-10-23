@@ -36,7 +36,7 @@
 #define MSM_HOTPLUG			"msm_hotplug"
 #define HOTPLUG_ENABLED			0
 #define DEFAULT_UPDATE_RATE		HZ / 10
-#define START_DELAY			HZ * 5
+#define START_DELAY			HZ * 10
 #define MIN_INPUT_INTERVAL		150 * 1000L
 #define DEFAULT_HISTORY_SIZE		10
 #define DEFAULT_DOWN_LOCK_DUR		1000
@@ -528,7 +528,7 @@ reschedule:
 static void __ref msm_hotplug_suspend(struct work_struct *work)
 {
 	int cpu;
-
+	
 	if (!hotplug.suspended) {
 		mutex_lock(&hotplug.msm_hotplug_mutex);
 		hotplug.suspended = 1;
@@ -541,14 +541,14 @@ static void __ref msm_hotplug_suspend(struct work_struct *work)
 		/* Flush hotplug workqueue */
 		flush_workqueue(hotplug_wq);
 		cancel_delayed_work_sync(&hotplug_work);
-
+		
 		/* Put sibling cores to sleep */
 		for_each_online_cpu(cpu) {
 			if (cpu == 0)
 				continue;
 			cpu_down(cpu);
 		}
-		
+
 		/*
 		 * Enabled core 1,2 so we will have 0-2 online
 		 * when screen is OFF to reduce system lags and reboots.

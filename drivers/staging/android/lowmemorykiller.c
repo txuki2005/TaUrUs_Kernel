@@ -64,25 +64,25 @@ static int lowmem_minfree[6] = {
 	3 *  512,	/* Foreground App: 	6 MB	*/
 	 2 * 1024,	/* Visible App: 	8 MB	*/
 	 4 * 1024,	/* Secondary Server: 	16 MB	*/
-	16 * 1024,	/* Hidden App: 		114 MB	*/
-	28 * 1024,	/* Content Provider: 	127 MB	*/
-	32 * 1024,	/* Empty App: 		139 MB	*/
+	16 * 1024,	/* Hidden App: 		64 MB	*/
+	28 * 1024,	/* Content Provider: 	112 MB	*/
+	32 * 1024,	/* Empty App: 		128 MB	*/
 };
 static int lowmem_minfree_screen_off[6] = {
 	3 * 512,	/* 6MB */
 	2 * 1024,	/* 8MB */
 	4 * 1024,	/* 16MB */
-	16 * 1024,	/* 114MB */
-	28 * 1024,	/* 127MB */
+	16 * 1024,	/* 64MB */
+	28 * 1024,	/* 112MB */
 	32 * 1024,	/* 128MB */
 };
 static int lowmem_minfree_screen_on[6] = {
 	3 * 512,	/* 6MB */
 	2 * 1024,	/* 8MB */
 	4 * 1024,	/* 16MB */
-	16 * 1024,	/* 114MB */
-	28 * 1024,	/* 127MB */
-	32 * 1024,	/* 139MB */
+	16 * 1024,	/* 64MB */
+	28 * 1024,	/* 112MB */
+	32 * 1024,	/* 128MB */
 };
 static int lowmem_minfree_size = 6;
 static int lmk_fast_run = 1;
@@ -110,7 +110,7 @@ module_param_named(enable_adaptive_lmk, enable_adaptive_lmk, int,
  * 90-94. Usually this is a pseudo minfree value, higher than the
  * highest configured value in minfree array.
  */
-static int vmpressure_file_min = 53059;
+static int vmpressure_file_min;
 module_param_named(vmpressure_file_min, vmpressure_file_min, int,
 	S_IRUGO | S_IWUSR);
 

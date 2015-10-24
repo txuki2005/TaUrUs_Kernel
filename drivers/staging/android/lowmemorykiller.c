@@ -185,6 +185,7 @@ static struct notifier_block lmk_vmpr_nb = {
 	.notifier_call = lmk_vmpressure_notifier,
 };
 
+#if 0 /* LP draning RAM, We need to trigger OOM on protected_apps/system for now */
 static bool avoid_to_kill(uid_t uid)
 {
 	/* 
@@ -193,19 +194,15 @@ static bool avoid_to_kill(uid_t uid)
 	 * uid == 1001 > radio
 	 * uid == 1002 > bluetooth
 	 * uid == 1010 > wifi
-	 * uid == 1013 > media
- 	 * uid == 1014 > dhcp
-	 * uid == 1021 > gps
-	 * uid == 1027 > nfc
+	 * uid == 1014 > dhcp
 	 */
-	if (uid == 1001 || uid == 1002 || uid == 1010
-			|| uid == 1013 || uid == 1014
-			|| uid == 1021 || uid == 1027)
+	if (uid == 0 || uid == 1001 || uid == 1002 || uid == 1010 ||
+			uid == 1014)
 		return 1;
 	return 0;
 }
 
-#if 0 /* LP draning RAM, We need to trigger OOM on protected_apps/system for now */
+
 static bool protected_apps(char *comm)
 {
 	if (strcmp(comm, "d.process.acore") == 0 ||
@@ -580,8 +577,6 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 
 #if 0 /* LP draning RAM, We need to trigger OOM on protected_apps for now */
 		if (avoid_to_kill(uid) || protected_apps(p->comm)){
-#else
-		if (avoid_to_kill(uid)) {
 			if (tasksize * (long)(PAGE_SIZE / 1024) >= 80000) {
 				selected = p;
 				selected_tasksize = tasksize;

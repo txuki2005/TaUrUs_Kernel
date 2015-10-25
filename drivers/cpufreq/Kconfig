@@ -106,11 +106,11 @@ config CPU_FREQ_DEFAULT_GOV_SMARTMAX
         help
           Use the CPUFreq governor 'smartmax' as default.
 
-config CPU_FREQ_DEFAULT_GOV_INTELLIACTIVE
-	bool "intelliactive"
-	select CPU_FREQ_GOV_INTELLIACTIVE
+config CPU_FREQ_DEFAULT_GOV_HELLSACTIVE
+	bool "hellsactive"
+	select CPU_FREQ_GOV_HELLSACTIVE
 	help
-	  Use the CPUFreq governor 'intelliactive' as default. This allows
+	  Use the CPUFreq governor 'hellsactive' as default. This allows
 	  you to get a full dynamic cpu frequency capable system by simply
 	  loading your cpufreq low-level hardware driver, using the
 	  'interactive' governor for latency-sensitive workloads.
@@ -220,10 +220,10 @@ config CPU_FREQ_GOV_SMARTMAX
         help
           'smartmax' combined ondemand and smartass2.
 
-config CPU_FREQ_GOV_INTELLIACTIVE
-	tristate "'intelliactive' cpufreq policy governor"
+config CPU_FREQ_GOV_HELLSACTIVE
+	tristate "'hellsactive' cpufreq policy governor"
 	help
-	  'intelliactive' - This driver adds a dynamic cpufreq policy governor
+	  'hellsactive' - This driver adds a dynamic cpufreq policy governor
 	  designed for latency-sensitive workloads.
 
 	  This governor attempts to reduce the latency of clock

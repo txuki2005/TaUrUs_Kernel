@@ -1606,6 +1606,13 @@ config SCHED_MC
 	  making when dealing with multi-core CPU chips at a cost of slightly
 	  increased overhead in some places. If unsure say N here.
 
+config MAKO_HOTPLUG
+	bool "hotplug driver"
+	depends on HOTPLUG_CPU
+	default y
+	help
+	  The Dynamic hotplug driver automatically online/offline CPUs by FranciscoFranco.
+
 config ASMP
 	bool "Multi-core automatic hotplug support"
 	depends on SMP

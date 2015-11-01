@@ -352,6 +352,8 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 			max_load = load;
 	}
 
+	cpufreq_notify_utilization(policy, max_load);
+
 	if (dbs_tuners_ins.freq_step == 0)
 		return;
 

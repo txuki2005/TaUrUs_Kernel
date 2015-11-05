@@ -226,6 +226,9 @@ on property:sys.boot_completed=1
 	write /sys/devices/virtual/misc/gammacontrol/red_mids 39
 	write /sys/devices/virtual/misc/gammacontrol/red_whites 0
 	write /sys/devices/virtual/misc/gammacontrol/saturation 2
+
+    # Max brigthness
+    write /sys/devices/i2c-0/0-0038/lm3530_max_br 100
 	
 	# GPU settings
     write /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/pwrscale/trustzone/governor "simple"

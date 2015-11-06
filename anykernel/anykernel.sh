@@ -156,14 +156,17 @@ dump_boot;
 replace_string default.prop "ro.adb.secure=0" "ro.adb.secure=1" "ro.adb.secure=0";
 replace_string default.prop "ro.secure=0" "ro.secure=1" "ro.secure=0";
 
-# remove unncessary binaries and stuff
+## remove unncessary binaries and stuff
+# init.rc
 sed -i "/# Run sysinit/d" init.rc;
 sed -i "/start sysinit/d" init.rc;
 sed -i ':a;N;$!ba;s/service sysinit \/system\/bin\/sysinit\n[ ]\+user root\n[ ]\+oneshot\n[ ]\+disabled//g' init.rc;
+# system binaries
 rm /system/bin/mpdecision
 rm /system/bin/thermald
 rm /system/lib/hw/power.msm8960.so
 rm /system/lib/hw/power.mako.so
+# init.mako.rc
 sed -i "/import init.mako_tiny.rc/d" init.mako.rc;
 sed -i "/import init.mako_svelte.rc/d" init.mako.rc;
 sed -i ':a;N;$!ba;s/service mpdecision \/system\/bin\/mpdecision --no_sleep --avg_comp\n[ ]\+class main\n[ ]\+user root\n[ ]\+group root system//g' init.mako.rc;
@@ -172,7 +175,8 @@ sed -i "/mpdecision/d" init.mako.rc;
 sed -i "/thermald/d" init.mako.rc;
 sed -i "/scaling_governor/ s/ondemand/interactive/g" init.mako.rc;
 
-##Kernel tunables
+## Kernel tunables
+insert_line init.mako.rc "txuki_confg" after "import init.mako.usb.rc" "import init.txuki_confg.rc\n";
 
 # adjust vibrator amplitude
 replace_line init.mako.rc "write /sys/class/timed_output/vibrator/amp 70" "    write /sys/class/timed_output/vibrator/amp 65";
@@ -188,52 +192,6 @@ replace_string init.mako.rc "/interactive/target_loads 65" "/interactive/target_
 replace_string init.mako.rc "192000" "384000" "192000";
 
 replace_line init.mako.rc "restorecon_recursive /sys/devices/system/cpu/cpufreq/ondemand" "    restorecon_recursive /sys/devices/system/cpu/cpufreq/interactive";
-
-## Add txuki2005 more stuff
-
-# Detect the presence of txuki tweaks into init.mako.rc
-txukitweaks=`grep -c "on property:sys.boot_completed=1" init.mako.rc`
-
-# Applying some txuki stuff after boot
-if [ $txukitweaks -eq 0 ] ; then
-echo "
-#txukimod
-on property:sys.boot_completed=1
-	
-	# Interactive settings
-    write /sys/devices/system/cpu/cpufreq/interactive/boost 0
-    write /sys/devices/system/cpu/cpufreq/interactive/align_windows 1 
-    write /sys/devices/system/cpu/cpufreq/interactive/timer_slack 80000
-    write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1134000
-    write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 20000
-    write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 20000
-    write /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 0
-    write /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration 50000
-	
-	# Gamma settings
-	write /sys/devices/virtual/misc/gammacontrol/blue_blacks 119
-	write /sys/devices/virtual/misc/gammacontrol/blue_greys 0
-	write /sys/devices/virtual/misc/gammacontrol/blue_mids 39
-	write /sys/devices/virtual/misc/gammacontrol/blue_whites 0
-	write /sys/devices/virtual/misc/gammacontrol/brightness 0
-	write /sys/devices/virtual/misc/gammacontrol/contrast 6
-	write /sys/devices/virtual/misc/gammacontrol/green_blacks 119
-	write /sys/devices/virtual/misc/gammacontrol/green_greys 0
-	write /sys/devices/virtual/misc/gammacontrol/green_mids 39
-	write /sys/devices/virtual/misc/gammacontrol/green_whites 0
-	write /sys/devices/virtual/misc/gammacontrol/red_blacks 119
-	write /sys/devices/virtual/misc/gammacontrol/red_greys 0
-	write /sys/devices/virtual/misc/gammacontrol/red_mids 39
-	write /sys/devices/virtual/misc/gammacontrol/red_whites 0
-	write /sys/devices/virtual/misc/gammacontrol/saturation 2
-
-    # Max brigthness
-    write /sys/devices/i2c-0/0-0038/lm3530_max_br 100
-	
-	# GPU settings
-    write /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/pwrscale/trustzone/governor "simple"
-    write /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/max_gpuclk 400000000 " >> init.mako.rc
-fi;
 
 # end ramdisk changes
 

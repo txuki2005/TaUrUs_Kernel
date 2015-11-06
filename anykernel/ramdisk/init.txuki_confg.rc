@@ -1,0 +1,37 @@
+# Custom settings for mako
+
+on property:sys.boot_completed=1
+
+# Interactive settings
+write /sys/devices/system/cpu/cpufreq/interactive/boost 0
+write /sys/devices/system/cpu/cpufreq/interactive/align_windows 1 
+write /sys/devices/system/cpu/cpufreq/interactive/timer_slack 80000
+write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1134000
+write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 20000
+write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 20000
+write /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 0
+write /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration 50000
+	
+# Gamma settings
+write /sys/devices/virtual/misc/gammacontrol/blue_blacks 119
+write /sys/devices/virtual/misc/gammacontrol/blue_greys 0
+write /sys/devices/virtual/misc/gammacontrol/blue_mids 39
+write /sys/devices/virtual/misc/gammacontrol/blue_whites 0
+write /sys/devices/virtual/misc/gammacontrol/brightness 0
+write /sys/devices/virtual/misc/gammacontrol/contrast 6
+write /sys/devices/virtual/misc/gammacontrol/green_blacks 119
+write /sys/devices/virtual/misc/gammacontrol/green_greys 0
+write /sys/devices/virtual/misc/gammacontrol/green_mids 39
+write /sys/devices/virtual/misc/gammacontrol/green_whites 0
+write /sys/devices/virtual/misc/gammacontrol/red_blacks 119
+write /sys/devices/virtual/misc/gammacontrol/red_greys 0
+write /sys/devices/virtual/misc/gammacontrol/red_mids 39
+write /sys/devices/virtual/misc/gammacontrol/red_whites 0
+write /sys/devices/virtual/misc/gammacontrol/saturation 2
+
+# Max brigthness
+write /sys/devices/i2c-0/0-0038/lm3530_max_br 100
+
+# GPU settings
+write /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/pwrscale/trustzone/governor "simple"
+write /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/max_gpuclk 400000000

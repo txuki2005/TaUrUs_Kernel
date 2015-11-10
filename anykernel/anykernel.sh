@@ -184,14 +184,26 @@ replace_line init.mako.rc "write /sys/class/timed_output/vibrator/amp 70" "    w
 # Enable Power modes and set the CPU Freq Sampling rates
 replace_string init.mako.rc "/cpufreq/interactive/" "/cpufreq/ondemand/" "/cpufreq/interactive/";
 replace_string init.mako.rc "conservative" "powersave" "conservative";
-replace_string init.mako.rc "go_hispeed_load" "up_threshold" "go_hispeed_load";
-replace_string init.mako.rc "min_sample_time" "sampling_rate" "min_sample_time";
-replace_string init.mako.rc "target_loads" "sampling_down_factor" "target_loads";
-replace_string init.mako.rc "/interactive/io_is_busy 0" "/interactive/io_is_busy 1" "/interactive/io_is_busy 0";
-replace_string init.mako.rc "/interactive/target_loads 65" "/interactive/target_loads 4" "/interactive/target_loads 65";
-replace_string init.mako.rc "192000" "384000" "192000";
+sed -i "/up_threshold/d" init.mako.rc;
+sed -i "/sampling_rate/d" init.mako.rc;
+sed -i "/io_is_busy/d" init.mako.rc;
+sed -i "/sampling_down_factor/d" init.mako.rc;
 
 replace_line init.mako.rc "restorecon_recursive /sys/devices/system/cpu/cpufreq/ondemand" "    restorecon_recursive /sys/devices/system/cpu/cpufreq/interactive";
+
+insert_line init.mako.rc "cpufreq/interactive/io_is_busy" before "restorecon_recursive /sys/devices/system/cpu/cpufreq/interactive" "\
+    write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 50000\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/boost 0\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/target_loads 65\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/align_windows 1\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 0\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/timer_slack 80000\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1134000\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 20000\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 20000\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 0\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration 50000\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90\n";
 
 # end ramdisk changes
 

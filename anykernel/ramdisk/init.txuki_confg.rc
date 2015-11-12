@@ -25,18 +25,3 @@ write /sys/devices/i2c-0/0-0038/lm3530_max_br 100
 # GPU settings
 write /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/pwrscale/trustzone/governor "simple"
 write /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/max_gpuclk 400000000
-
-# Misc Kernel-Tweaks
-write /proc/sys/kernel/sched_min_granularity_ns 1000000
-write /proc/sys/kernel/sched_latency_ns 18000000
-write /proc/sys/kernel/sched_wakeup_granularity_ns 3000000
-write /proc/sys/kernel/panic 0
-write /proc/sys/kernel/panic_on_oops 1
-write /proc/sys/kernel/msgmni 64000
-write /proc/sys/kernel/msgmax 64000
-write /proc/sys/kernel/shmmni 4096
-write /proc/sys/kernel/shmall 2097152
-write /proc/sys/kernel/shmmax 536870912
-write /proc/sys/kernel/threads-max 524288
-write /proc/sys/kernel/sem 500 512000 64 2048
-write /proc/sys/kernel/sched_child_runs_first 0

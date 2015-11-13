@@ -178,12 +178,8 @@ sed -i "/scaling_governor/ s/ondemand/interactive/g" init.mako.rc;
 ## Kernel tunables
 insert_line init.mako.rc "txuki_confg" after "import init.mako.usb.rc" "import init.txuki_confg.rc\n";
 
-# adjust vibrator amplitude
-replace_line init.mako.rc "write /sys/class/timed_output/vibrator/amp 70" "    write /sys/class/timed_output/vibrator/amp 65";
-
 # Enable Power modes and set the CPU Freq Sampling rates
 replace_string init.mako.rc "/cpufreq/interactive/" "/cpufreq/ondemand/" "/cpufreq/interactive/";
-replace_string init.mako.rc "conservative" "powersave" "conservative";
 sed -i "/up_threshold/d" init.mako.rc;
 sed -i "/sampling_rate/d" init.mako.rc;
 sed -i "/io_is_busy/d" init.mako.rc;

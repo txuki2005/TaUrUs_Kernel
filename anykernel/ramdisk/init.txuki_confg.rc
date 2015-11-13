@@ -25,3 +25,6 @@ write /sys/devices/i2c-0/0-0038/lm3530_max_br 100
 # GPU settings
 write /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/pwrscale/trustzone/governor "simple"
 write /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/max_gpuclk 400000000
+
+# adjust vibrator amplitude
+write /sys/class/timed_output/vibrator/amp 65

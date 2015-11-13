@@ -190,7 +190,7 @@ replace_line init.mako.rc "restorecon_recursive /sys/devices/system/cpu/cpufreq/
 insert_line init.mako.rc "cpufreq/interactive/io_is_busy" before "restorecon_recursive /sys/devices/system/cpu/cpufreq/interactive" "\
     write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 50000\
 \n    write /sys/devices/system/cpu/cpufreq/interactive/boost 0\
-\n    write /sys/devices/system/cpu/cpufreq/interactive/target_loads 65\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/target_loads 90\
 \n    write /sys/devices/system/cpu/cpufreq/interactive/align_windows 1\
 \n    write /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 0\
 \n    write /sys/devices/system/cpu/cpufreq/interactive/timer_slack 80000\
@@ -199,7 +199,7 @@ insert_line init.mako.rc "cpufreq/interactive/io_is_busy" before "restorecon_rec
 \n    write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 20000\
 \n    write /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 0\
 \n    write /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration 50000\
-\n    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90\n";
+\n    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 99\n";
 
 # end ramdisk changes
 

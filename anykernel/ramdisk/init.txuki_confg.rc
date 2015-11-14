@@ -5,19 +5,19 @@ on property:sys.boot_completed=1
 # Gamma settings
 write /sys/devices/virtual/misc/gammacontrol/blue_blacks 119
 write /sys/devices/virtual/misc/gammacontrol/blue_greys 0
-write /sys/devices/virtual/misc/gammacontrol/blue_mids 39
-write /sys/devices/virtual/misc/gammacontrol/blue_whites 0
+write /sys/devices/virtual/misc/gammacontrol/blue_mids 119
+write /sys/devices/virtual/misc/gammacontrol/blue_whites 7
 write /sys/devices/virtual/misc/gammacontrol/brightness 0
-write /sys/devices/virtual/misc/gammacontrol/contrast 6
+write /sys/devices/virtual/misc/gammacontrol/contrast 0
 write /sys/devices/virtual/misc/gammacontrol/green_blacks 119
 write /sys/devices/virtual/misc/gammacontrol/green_greys 0
-write /sys/devices/virtual/misc/gammacontrol/green_mids 39
-write /sys/devices/virtual/misc/gammacontrol/green_whites 0
+write /sys/devices/virtual/misc/gammacontrol/green_mids 119
+write /sys/devices/virtual/misc/gammacontrol/green_whites 7
 write /sys/devices/virtual/misc/gammacontrol/red_blacks 119
 write /sys/devices/virtual/misc/gammacontrol/red_greys 0
-write /sys/devices/virtual/misc/gammacontrol/red_mids 39
-write /sys/devices/virtual/misc/gammacontrol/red_whites 0
-write /sys/devices/virtual/misc/gammacontrol/saturation 2
+write /sys/devices/virtual/misc/gammacontrol/red_mids 119
+write /sys/devices/virtual/misc/gammacontrol/red_whites 7
+write /sys/devices/virtual/misc/gammacontrol/saturation 119
 
 # Max brigthness
 write /sys/devices/i2c-0/0-0038/lm3530_max_br 100

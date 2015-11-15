@@ -19,8 +19,6 @@
  * Author: Laurent Hess (hellsgod@gmx.ch) Modified for hellsactive
  */
 
-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-
 #include <linux/cpu.h>
 #include <linux/cpumask.h>
 #include <linux/cpufreq.h>

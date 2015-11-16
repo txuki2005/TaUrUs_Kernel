@@ -358,10 +358,12 @@ static void show_data(unsigned long addr, int nbytes, const char *name)
 	u32	*p;
 
 	/*
-	 * don't attempt to dump non-kernel addresses or
-	 * values that are probably just small negative numbers
+	 * don't attempt to dump non-kernel addresses, values that are probably
+	 * just small negative numbers, or vmalloc addresses that may point to
+	 * memory-mapped peripherals
 	 */
-	if (addr < PAGE_OFFSET || addr > -256UL)
+	if (addr < PAGE_OFFSET || addr > -256UL ||
+	    is_vmalloc_addr((void *)addr))
 		return;
 
 	printk("\n%s: %#lx:\n", name, addr);
@@ -383,12 +385,7 @@ static void show_data(unsigned long addr, int nbytes, const char *name)
 		printk("%04lx ", (unsigned long)p & 0xffff);
 		for (j = 0; j < 8; j++) {
 			u32	data;
-			/*
-			 * vmalloc addresses may point to
-			 * memory-mapped peripherals
-			 */
-			if (is_vmalloc_addr(p) ||
-			    probe_kernel_address(p, data)) {
+			if (probe_kernel_address(p, data)) {
 				printk(" ********");
 			} else {
 				printk(" %08x", data);

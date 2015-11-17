@@ -152,10 +152,6 @@ dump_boot;
 #cp -fp $patch/init.d/* $initd
 #chmod -R 766 $initd
 
-# adb secure
-replace_string default.prop "ro.adb.secure=0" "ro.adb.secure=1" "ro.adb.secure=0";
-replace_string default.prop "ro.secure=0" "ro.secure=1" "ro.secure=0";
-
 ## remove unncessary binaries and stuff
 # init.rc
 sed -i "/# Run sysinit/d" init.rc;

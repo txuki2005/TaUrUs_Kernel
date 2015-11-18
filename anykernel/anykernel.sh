@@ -204,8 +204,7 @@ insert_line init.mako.rc "cpufreq/interactive/io_is_busy" before "restorecon_rec
 \n    write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 20000\
 \n    write /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 100000\
 \n    write /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration 50000\
-\n    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90\
-\n    write /sys/devices/system/cpu/cpufreq/interactive/input_boost_freq 1026000\n";
+\n    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90\n";
 
 # end ramdisk changes
 

@@ -115,11 +115,11 @@ config CPU_FREQ_DEFAULT_GOV_SMARTMAX
         help
           Use the CPUFreq governor 'smartmax' as default.
 
-config CPU_FREQ_DEFAULT_GOV_BLU_ACTIVE
-	bool "blu_active"
-	select CPU_FREQ_GOV_BLU_ACTIVE
+config CPU_FREQ_DEFAULT_GOV_HELLSACTIVE
+	bool "hellsactive"
+	select CPU_FREQ_GOV_HELLSACTIVE
 	help
-	  Use the CPUFreq governor 'blu_active' as default. This allows
+	  Use the CPUFreq governor 'hellsactive' as default. This allows
 	  you to get a full dynamic cpu frequency capable system by simply
 	  loading your cpufreq low-level hardware driver, using the
 	  'interactive' governor for latency-sensitive workloads.
@@ -240,10 +240,10 @@ config CPU_FREQ_GOV_SMARTMAX
         help
           'smartmax' combined ondemand and smartass2.
 
-config CPU_FREQ_GOV_BLU_ACTIVE
-	tristate "'blu_active' cpufreq policy governor"
+config CPU_FREQ_GOV_HELLSACTIVE
+	tristate "'hellsactive' cpufreq policy governor"
 	help
-	  'blu_active' - This driver adds a dynamic cpufreq policy governor
+	  'hellsactive' - This driver adds a dynamic cpufreq policy governor
 	  designed for latency-sensitive workloads.
 
 	  This governor attempts to reduce the latency of clock
@@ -251,7 +251,9 @@ config CPU_FREQ_GOV_BLU_ACTIVE
 	  interactive workloads.
 
 	  To compile this driver as a module, choose M here: the
-	  module will be called cpufreq_blu_active.
+	  module will be called cpufreq_interactive.
+
+	  For details, take a look at linux/Documentation/cpu-freq.
 
 	  If in doubt, say N.
 	

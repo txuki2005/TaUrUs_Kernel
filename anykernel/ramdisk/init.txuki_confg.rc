@@ -3,28 +3,24 @@
 on property:sys.boot_completed=1
 	
 # Gamma settings
-write /sys/devices/virtual/misc/gammacontrol/blue_blacks 119
-write /sys/devices/virtual/misc/gammacontrol/blue_greys 0
-write /sys/devices/virtual/misc/gammacontrol/blue_mids 119
-write /sys/devices/virtual/misc/gammacontrol/blue_whites 7
-write /sys/devices/virtual/misc/gammacontrol/brightness 0
-write /sys/devices/virtual/misc/gammacontrol/contrast 0
-write /sys/devices/virtual/misc/gammacontrol/green_blacks 119
-write /sys/devices/virtual/misc/gammacontrol/green_greys 0
-write /sys/devices/virtual/misc/gammacontrol/green_mids 119
-write /sys/devices/virtual/misc/gammacontrol/green_whites 7
-write /sys/devices/virtual/misc/gammacontrol/red_blacks 119
-write /sys/devices/virtual/misc/gammacontrol/red_greys 0
-write /sys/devices/virtual/misc/gammacontrol/red_mids 119
-write /sys/devices/virtual/misc/gammacontrol/red_whites 7
-write /sys/devices/virtual/misc/gammacontrol/saturation 119
+write /sys/devices/virtual/misc/gammacontrol/blue_blacks 118
+write /sys/devices/virtual/misc/gammacontrol/blue_greys 32
+write /sys/devices/virtual/misc/gammacontrol/blue_mids 68
+write /sys/devices/virtual/misc/gammacontrol/blue_whites 64
+write /sys/devices/virtual/misc/gammacontrol/brightness 4
+write /sys/devices/virtual/misc/gammacontrol/contrast 25
+write /sys/devices/virtual/misc/gammacontrol/green_blacks 118
+write /sys/devices/virtual/misc/gammacontrol/green_greys 32
+write /sys/devices/virtual/misc/gammacontrol/green_mids 68
+write /sys/devices/virtual/misc/gammacontrol/green_whites 64
+write /sys/devices/virtual/misc/gammacontrol/red_blacks 118
+write /sys/devices/virtual/misc/gammacontrol/red_greys 32
+write /sys/devices/virtual/misc/gammacontrol/red_mids 68
+write /sys/devices/virtual/misc/gammacontrol/red_whites 64
+write /sys/devices/virtual/misc/gammacontrol/saturation 64
 
 # Max brigthness
 write /sys/devices/i2c-0/0-0038/lm3530_max_br 100
 
 # GPU settings
-write /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/pwrscale/trustzone/governor "simple"
 write /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/max_gpuclk 400000000
-
-# adjust vibrator amplitude
-write /sys/class/timed_output/vibrator/amp 65

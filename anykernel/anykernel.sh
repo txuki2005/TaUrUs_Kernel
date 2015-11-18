@@ -29,20 +29,25 @@ patch=/tmp/anykernel/patch;
 
 chmod -R 755 $bin;
 mkdir -p $ramdisk $split_img;
-cd $ramdisk;
 
-OUTFD=`ps | grep -v "grep" | grep -oE "update(.*)" | cut -d" " -f3`;
-ui_print() { echo "ui_print $1" >&$OUTFD; echo "ui_print" >&$OUTFD; }
+OUTFD=/proc/self/fd/$1;
+ui_print() { echo -e "ui_print $1\nui_print" > $OUTFD; }
 
 # dump boot and extract ramdisk
 dump_boot() {
   dd if=$block of=/tmp/anykernel/boot.img;
   $bin/unpackbootimg -i /tmp/anykernel/boot.img -o $split_img;
   if [ $? != 0 ]; then
-    ui_print " "; ui_print "Dumping/unpacking image failed. Aborting...";
-    echo 1 > /tmp/anykernel/exitcode; exit;
+    ui_print " "; ui_print "Dumping/splitting image failed. Aborting..."; exit 1;
   fi;
+  mv -f $ramdisk /tmp/anykernel/rdtmp;
+  mkdir -p $ramdisk;
+  cd $ramdisk;
   gunzip -c $split_img/boot.img-ramdisk.gz | cpio -i;
+  if [ $? != 0 -o -z "$(ls $ramdisk)" ]; then
+    ui_print " "; ui_print "Unpacking ramdisk failed. Aborting..."; exit 1;
+  fi;
+  cp -af /tmp/anykernel/rdtmp/* $ramdisk;
 }
 
 # repack ramdisk then build and write image
@@ -69,10 +74,14 @@ write_boot() {
   fi;
   cd $ramdisk;
   find . | cpio -H newc -o | gzip > /tmp/anykernel/ramdisk-new.cpio.gz;
+  if [ $? != 0 ]; then
+    ui_print " "; ui_print "Repacking ramdisk failed. Aborting..."; exit 1;
+  fi;
   $bin/mkbootimg --kernel /tmp/anykernel/zImage --ramdisk /tmp/anykernel/ramdisk-new.cpio.gz $second --cmdline "$cmdline" --board "$board" --base $base --pagesize $pagesize --kernel_offset $kerneloff --ramdisk_offset $ramdiskoff $secondoff --tags_offset $tagsoff $dtb --output /tmp/anykernel/boot-new.img;
-  if [ $? != 0 -o `wc -c < /tmp/anykernel/boot-new.img` -gt `wc -c < /tmp/anykernel/boot.img` ]; then
-    ui_print " "; ui_print "Repacking image failed. Aborting...";
-    echo 1 > /tmp/anykernel/exitcode; exit;
+  if [ $? != 0 ]; then
+    ui_print " "; ui_print "Repacking image failed. Aborting..."; exit 1;
+  elif [ `wc -c < /tmp/anykernel/boot-new.img` -gt `wc -c < /tmp/anykernel/boot.img` ]; then
+    ui_print " "; ui_print "New image larger than boot partition. Aborting..."; exit 1;
   fi;
   dd if=/tmp/anykernel/boot-new.img of=$block;
 }
@@ -142,6 +151,7 @@ replace_file() {
 ## AnyKernel permissions
 # set permissions for included files
 chmod -R 755 $ramdisk
+chmod 750 $ramdisk/init.txuki_confg.rc
 
 ## AnyKernel install
 dump_boot;
@@ -184,18 +194,18 @@ sed -i "/sampling_down_factor/d" init.mako.rc;
 replace_line init.mako.rc "restorecon_recursive /sys/devices/system/cpu/cpufreq/ondemand" "    restorecon_recursive /sys/devices/system/cpu/cpufreq/interactive";
 
 insert_line init.mako.rc "cpufreq/interactive/io_is_busy" before "restorecon_recursive /sys/devices/system/cpu/cpufreq/interactive" "\
-    write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 50000\
+    write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 40000\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/target_loads 85\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 1\
 \n    write /sys/devices/system/cpu/cpufreq/interactive/boost 0\
-\n    write /sys/devices/system/cpu/cpufreq/interactive/target_loads 75\
-\n    write /sys/devices/system/cpu/cpufreq/interactive/align_windows 1\
-\n    write /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 0\
-\n    write /sys/devices/system/cpu/cpufreq/interactive/timer_slack 80000\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/timer_slack 60000\
 \n    write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1134000\
 \n    write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 20000\
 \n    write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 20000\
-\n    write /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 0\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 100000\
 \n    write /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration 50000\
-\n    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90\n";
+\n    write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90\
+\n    write /sys/devices/system/cpu/cpufreq/interactive/input_boost_freq 1026000\n";
 
 # end ramdisk changes
 

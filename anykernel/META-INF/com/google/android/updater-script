@@ -1,16 +1,8 @@
 show_progress(1.34, 4);
 ui_print(" ");
-ui_print(" ");
-ui_print(" ");
-ui_print(" ");
 ui_print("Kernel for Nexus 4 with Android 6.0 AOSP inside");
 ui_print(" ");
-ui_print(" ");
-ui_print("TAURUS-Mallow kernel AOSP by Txuki2005");
-ui_print(" ");
-ui_print(" ");
-ui_print("Thanks Dmitry Grinberg for your port and code kernel");
-ui_print(" ");
+ui_print("TaUrUs-Mallow kernel AOSP by Txuki2005");
 ui_print(" ");
 assert(package_extract_dir("", "/tmp/anykernel"));
 ui_print(file_getprop("/tmp/anykernel/anykernel.sh", "kernel.string"));

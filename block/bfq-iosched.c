@@ -1721,7 +1721,7 @@ static void bfq_arm_slice_timer(struct bfq_data *bfqd)
 	if (bfq_sample_valid(bfqq->seek_samples) &&
 	    ((BFQQ_SEEKY(bfqq) && bfqq->entity.service >
 				  bfq_max_budget(bfqq->bfqd) / 8) ||
-	     bfq_bfqq_constantly_seeky(bfqq)) && bfqq->wr_coeff == 1 &&
+	      bfq_bfqq_constantly_seeky(bfqq)) && bfqq->wr_coeff == 1 &&
 	    symmetric_scenario)
 		sl = min(sl, msecs_to_jiffies(BFQ_MIN_TT));
 	else if (bfqq->wr_coeff > 1)
@@ -3023,7 +3023,7 @@ static void bfq_check_ioprio_change(struct io_context *ioc,
 }
 
 static void bfq_init_bfqq(struct bfq_data *bfqd, struct bfq_queue *bfqq,
-			   struct bfq_io_cq *bic, pid_t pid, int is_sync)
+			  struct bfq_io_cq *bic, pid_t pid, int is_sync)
 {
 	RB_CLEAR_NODE(&bfqq->entity.rb_node);
 	INIT_LIST_HEAD(&bfqq->fifo);
@@ -3506,7 +3506,6 @@ static int bfq_may_queue(struct request_queue *q, int rw)
 
 	bfqq = bic_to_bfqq(bic, rw_is_sync(rw));
 	if (bfqq != NULL)
-
 		return __bfq_may_queue(bfqq);
 
 	return ELV_MQUEUE_MAY;
@@ -3974,7 +3973,6 @@ static ssize_t __FUNC(struct elevator_queue *e, char *page)		\
 		__data = jiffies_to_msecs(__data);			\
 	return bfq_var_show(__data, (page));				\
 }
-
 SHOW_FUNCTION(bfq_fifo_expire_sync_show, bfqd->bfq_fifo_expire[1], 1);
 SHOW_FUNCTION(bfq_fifo_expire_async_show, bfqd->bfq_fifo_expire[0], 1);
 SHOW_FUNCTION(bfq_back_seek_max_show, bfqd->bfq_back_max, 0);
@@ -4205,5 +4203,5 @@ static void __exit bfq_exit(void)
 module_init(bfq_init);
 module_exit(bfq_exit);
 
-
+MODULE_AUTHOR("Fabio Checconi, Paolo Valente");
 MODULE_LICENSE("GPL");

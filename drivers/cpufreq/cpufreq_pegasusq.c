@@ -586,13 +586,12 @@ static inline void dbs_timer_init(struct cpu_dbs_info_s *dbs_info)
 	/* We want all CPUs to do sampling nearly on same jiffy */
 	int delay = usecs_to_jiffies(DEF_START_DELAY * 1000 * 1000
 				     + dbs_tuners_ins.sampling_rate);
-	unsigned int cpu = dbs_info->cpu;
 
 	if (num_online_cpus() > 1)
 		delay -= jiffies % delay;
 
 	INIT_DEFERRABLE_WORK(&dbs_info->work, do_dbs_timer);
-	schedule_delayed_work_on(cpu, &dbs_info->work, delay);
+	schedule_delayed_work_on(dbs_info->cpu, &dbs_info->work, delay);
 }
 
 static inline void dbs_timer_exit(struct cpu_dbs_info_s *dbs_info)
@@ -609,7 +608,6 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 	int rc;
 
 	this_dbs_info = &per_cpu(od_cpu_dbs_info, cpu);
-	this_dbs_info->cpu = cpu;
 	switch (event) {
 	case CPUFREQ_GOV_START:
 
@@ -634,6 +632,7 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 						kcpustat_cpu(j).cpustat[CPUTIME_NICE];
 			}
 		}
+		this_dbs_info->cpu = cpu;
 
 		this_dbs_info->rate_mult = 1;
 		/*
@@ -680,8 +679,12 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 
 	case CPUFREQ_GOV_LIMITS:
 		mutex_lock(&this_dbs_info->timer_mutex);
-		__cpufreq_driver_target(this_dbs_info->cur_policy,
-				policy->cur, CPUFREQ_RELATION_L);
+		if (policy->max < this_dbs_info->cur_policy->cur)
+			__cpufreq_driver_target(this_dbs_info->cur_policy,
+				policy->max, CPUFREQ_RELATION_H);
+		else if (policy->min > this_dbs_info->cur_policy->cur)
+			__cpufreq_driver_target(this_dbs_info->cur_policy,
+				policy->min, CPUFREQ_RELATION_L);
 		dbs_check_cpu(this_dbs_info);
 		mutex_unlock(&this_dbs_info->timer_mutex);
 

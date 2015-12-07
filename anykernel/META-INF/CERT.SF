@@ -1,0 +1,37 @@
+Signature-Version: 1.0
+Created-By: 1.0 (Android SignApk)
+SHA1-Digest-Manifest: 0hVU/iFpTXqDbW7whGv7TGC/MRE=
+
+Name: tmp/anykernel/zImage
+SHA1-Digest: TDygQb8+LH2NtlbABIx2be04rlA=
+
+Name: system/vendor/firmware/wlan/prima/WCNSS_cfg.dat
+SHA1-Digest: P0VWJXPNZEwJRryjxvh63ZgqIa0=
+
+Name: META-INF/com/google/android/updater-script
+SHA1-Digest: qmvAOxuLzS2qeUqo0c0UbGuOsR4=
+
+Name: tmp/anykernel/modrd.sh
+SHA1-Digest: /0CR74iGEsT+7JUZ94ieSomUw/8=
+
+Name: tmp/anykernel/mkbootimg
+SHA1-Digest: hFLLB51z6XrGFL0KyC3js1xn5+0=
+
+Name: tmp/anykernel/fkbootscript.sh
+SHA1-Digest: u8ExJDkRwicmfe1b+bVu6q3YjKQ=
+
+Name: system/etc/wifi/WCNSS_qcom_cfg.ini
+SHA1-Digest: AwxY72fL7oULPhjmbbbiQ2XKxeQ=
+
+Name: tmp/anykernel/smart-fstab-generator.sh
+SHA1-Digest: 4BMo5c+Wiuvf5stzZc2sOHWxrEY=
+
+Name: tmp/anykernel.sh
+SHA1-Digest: vzVoKtjZZQG6IeOmIt1hDHOzITI=
+
+Name: META-INF/com/google/android/update-binary
+SHA1-Digest: CCeK03El/mTt+pqw6TQ1o7tXF34=
+
+Name: tmp/anykernel/unpackbootimg
+SHA1-Digest: xHyVrwBSZ+WUd83EwTLgnMSvlXE=
+

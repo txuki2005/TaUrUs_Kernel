@@ -1,0 +1,39 @@
+# Custom settings for mako
+
+on property:sys.boot_completed=1
+	
+# Gamma settings
+	write /sys/devices/virtual/misc/gammacontrol/blue_blacks 118
+	write /sys/devices/virtual/misc/gammacontrol/blue_greys 32
+	write /sys/devices/virtual/misc/gammacontrol/blue_mids 68
+	write /sys/devices/virtual/misc/gammacontrol/blue_whites 64
+	write /sys/devices/virtual/misc/gammacontrol/brightness 4
+	write /sys/devices/virtual/misc/gammacontrol/contrast 25
+	write /sys/devices/virtual/misc/gammacontrol/green_blacks 118
+	write /sys/devices/virtual/misc/gammacontrol/green_greys 32
+	write /sys/devices/virtual/misc/gammacontrol/green_mids 68
+	write /sys/devices/virtual/misc/gammacontrol/green_whites 64
+	write /sys/devices/virtual/misc/gammacontrol/red_blacks 118
+	write /sys/devices/virtual/misc/gammacontrol/red_greys 32
+	write /sys/devices/virtual/misc/gammacontrol/red_mids 68
+	write /sys/devices/virtual/misc/gammacontrol/red_whites 64
+	write /sys/devices/virtual/misc/gammacontrol/saturation 64
+
+# Max brigthness
+	write /sys/devices/i2c-0/0-0038/lm3530_max_br 100
+
+# GPU settings
+	write /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/max_gpuclk 400000000
+
+# Interactive tuneup
+	write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 40000
+	write /sys/devices/system/cpu/cpufreq/interactive/target_loads 85
+	write /sys/devices/system/cpu/cpufreq/interactive/io_is_busy 1
+	write /sys/devices/system/cpu/cpufreq/interactive/boost 0
+	write /sys/devices/system/cpu/cpufreq/interactive/timer_slack 60000
+	write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1134000
+	write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 20000
+	write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 20000
+	write /sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 100000
+	write /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration 50000
+	write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90

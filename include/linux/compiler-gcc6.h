@@ -1,5 +1,5 @@
 #ifndef __LINUX_COMPILER_H
-#error "Please don't include <linux/compiler-gcc5.h> directly, include <linux/compiler.h> instead."
+#error "Please don't include <linux/compiler-gcc6.h> directly, include <linux/compiler.h> instead."
 #endif
 
 #define __used				__attribute__((__used__))

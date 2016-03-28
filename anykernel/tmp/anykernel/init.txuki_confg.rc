@@ -1,23 +1,6 @@
 # Custom settings for mako
 
 on property:sys.boot_completed=1
-	
-# Gamma settings
-	write /sys/devices/virtual/misc/gammacontrol/blue_blacks 118
-	write /sys/devices/virtual/misc/gammacontrol/blue_greys 32
-	write /sys/devices/virtual/misc/gammacontrol/blue_mids 68
-	write /sys/devices/virtual/misc/gammacontrol/blue_whites 64
-	write /sys/devices/virtual/misc/gammacontrol/brightness 4
-	write /sys/devices/virtual/misc/gammacontrol/contrast 25
-	write /sys/devices/virtual/misc/gammacontrol/green_blacks 118
-	write /sys/devices/virtual/misc/gammacontrol/green_greys 32
-	write /sys/devices/virtual/misc/gammacontrol/green_mids 68
-	write /sys/devices/virtual/misc/gammacontrol/green_whites 64
-	write /sys/devices/virtual/misc/gammacontrol/red_blacks 118
-	write /sys/devices/virtual/misc/gammacontrol/red_greys 32
-	write /sys/devices/virtual/misc/gammacontrol/red_mids 68
-	write /sys/devices/virtual/misc/gammacontrol/red_whites 64
-	write /sys/devices/virtual/misc/gammacontrol/saturation 64
 
 # Max brigthness
 	write /sys/devices/i2c-0/0-0038/lm3530_max_br 100

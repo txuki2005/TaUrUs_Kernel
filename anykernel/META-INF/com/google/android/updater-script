@@ -1,6 +1,8 @@
+ui_print("***********************************************");
+ui_print("***********************************************");
 ui_print("Initializing...");
 ui_print("***********************************************");
-ui_print("Kernel for Nexus 4 with Android 6.0 AOSP inside");
+ui_print("Kernel for Nexus 4 with Android 6.0.X AOSP inside");
 ui_print("***********************************************");
 ui_print("***********************************************");
 ui_print("TaUrUs-Mallow kernel AOSP by Txuki2005");

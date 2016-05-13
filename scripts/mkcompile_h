@@ -5,7 +5,7 @@ ARCH=$2
 SMP=$3
 PREEMPT=$4
 CC=$5
-KBUILD_BUILD_VERSION=42
+KBUILD_BUILD_VERSION=43
 
 vecho() { [ "${quiet}" = "silent_" ] || echo "$@" ; }
 

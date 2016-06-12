@@ -151,21 +151,6 @@ config CPU_FREQ_DEFAULT_GOV_WHEATLEY
 	---help---
 	  Use the CPUFreq governor 'wheatley' as default.
 
-config CPU_FREQ_DEFAULT_GOV_ADAPTIVE
-	bool "adaptive"
-	select CPU_FREQ_GOV_ADAPTIVE
-	---help---
-	  Use the CPUFreq governor 'adaptive' as default. This allows
-	  you to get a full dynamic cpu frequency capable system by simply
-	  loading your cpufreq low-level hardware driver, using the
-	  'adaptive' governor for latency-sensitive workloads and demanding
-	  performance.
-
-config CPU_FREQ_DEFAULT_GOV_BARRY_ALLEN
-	bool "barry_allen"
-	select CPU_FREQ_GOV_BARRY_ALLEN
-	help
-
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -301,14 +286,6 @@ config CPU_FREQ_GOV_LIONHEART
 config CPU_FREQ_GOV_WHEATLEY
 	tristate "'wheatley' cpufreq governor"
 	depends on CPU_FREQ
-
-config CPU_FREQ_GOV_ADAPTIVE
-	tristate "'adaptive' cpufreq policy governor"
-	help
-
-config CPU_FREQ_GOV_BARRY_ALLEN
-	tristate "'barry_allen' cpufreq policy governor"
-	help
 
 menu "x86 CPU frequency scaling drivers"
 depends on X86

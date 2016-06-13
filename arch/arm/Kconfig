@@ -1633,14 +1633,14 @@ config SCHED_MC
 config MAKO_HOTPLUG
 	bool "hotplug driver"
 	depends on HOTPLUG_CPU
-	default y
+	default n
 	help
 	  The Dynamic hotplug driver automatically online/offline CPUs by FranciscoFranco.
 
 config ASMP
 	bool "Multi-core automatic hotplug support"
 	depends on SMP
-	default n
+	default y
 	help
 	  Automatically hotplugs the multiple cpu cores on and off
 	  based on cpu load and suspend state

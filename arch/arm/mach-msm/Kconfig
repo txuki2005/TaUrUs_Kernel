@@ -1541,6 +1541,14 @@ config USERSPACE_VOLTAGE_CONTROL
 	help
 	  Userspace Voltage Control
 
+config DYN_HOTPLUG
+ 	bool "hotplug driver"
+	depends on HOTPLUG_CPU
+ 	default n
+ 	help
+	  The Dynamic hotplug driver by Stratos Karafotis to automatically
+	  online/offline CPUs according to load.
+
 config MSM_AVS_HW
 	bool "Enable Adaptive Voltage Scaling (AVS)"
 	default n
